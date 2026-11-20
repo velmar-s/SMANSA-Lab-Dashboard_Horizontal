@@ -706,6 +706,149 @@
       </div>
     </section>
 
+    <!-- SPIRITUALITAS & KEROHANIAN (TAB KRISTEN & ISLAM) -->
+    <section id="spiritualitas" class="py-20 bg-sman-surface border-t border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <!-- Section Heading -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 reveal">
+          <div>
+            <span class="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sman-goldLight text-sman-navy mb-2">
+              Dokumentasi Sekolah
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-sman-navy">Spiritualitas &amp; Kerohanian</h2>
+          </div>
+          <p class="text-sm text-sman-muted max-w-md">
+            Potret kegiatan pembiasaan ibadah pagi dan penguatan nilai spiritual seluruh warga sekolah.
+          </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap items-center gap-2.5 reveal" role="tablist">
+          <button
+            type="button"
+            onclick="showSpiritualGallery('kristen', this)"
+            class="spiritual-tab-btn px-5 py-2.5 rounded-xl text-sm font-bold bg-sman-navy text-white border border-sman-navy shadow-sm transition-all duration-200 cursor-pointer"
+          >
+            Kristen
+          </button>
+          <button
+            type="button"
+            onclick="showSpiritualGallery('islam', this)"
+            class="spiritual-tab-btn px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-sman-muted border border-slate-200 hover:bg-slate-100 hover:text-sman-navy transition-all duration-200 cursor-pointer"
+          >
+            Islam
+          </button>
+        </div>
+
+        <!-- KRISTEN -->
+        <div id="spiritual-kristen" class="spiritual-gallery-content space-y-6 animate-fade-in-up">
+          <div>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-sman-navy">Ibadah &amp; Pembinaan Rohani Kristen</h3>
+            <p class="text-xs sm:text-sm text-sman-muted mt-1">
+              Dokumentasi ibadah pagi, persekutuan, dan pembinaan karakter spiritual murid.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <article class="group rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300">
+              <div class="aspect-video overflow-hidden bg-slate-200 relative">
+                <img
+                  src="https://drive.google.com/thumbnail?id=17A9WnocMM9CCBEkl8nIW0jvSRXU_wE1l&sz=w900"
+                  alt="Ibadah Bersama Siswa Kristen SMAN 1 Kota Depok"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  onerror="this.src='https://drive.google.com/thumbnail?id=1F20chHve1L2sbb7IN_xNOfvxDc1gENEf&sz=w900'"
+                />
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-sman-navy/80 text-white text-[11px] font-mono backdrop-blur-sm">
+                  Kegiatan 1
+                </span>
+              </div>
+              <div class="p-5">
+                <span class="text-[11px] font-mono font-bold text-sman-blue uppercase tracking-wider">Kegiatan Rohani Kristen</span>
+                <h4 class="text-lg font-bold text-sman-navy mt-1">Doa Pagi</h4>
+                <p class="text-xs sm:text-sm text-sman-muted mt-1.5 leading-relaxed">
+                  Kegiatan pembiasaan ibadah pagi dan doa bersama dalam lingkungan sekolah.
+                </p>
+              </div>
+            </article>
+
+            <article class="group rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300">
+              <div class="aspect-video overflow-hidden bg-slate-200 relative">
+                <img
+                  src="https://drive.google.com/thumbnail?id=19sZ66yUeBpCMSWuH0iaLzgkHmQg5OLf1&sz=w900"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  onerror="this.src='https://drive.google.com/thumbnail?id=1F20chHve1L2sbb7IN_xNOfvxDc1gENEf&sz=w900'"
+                />
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-sman-navy/80 text-white text-[11px] font-mono backdrop-blur-sm">
+                  Kegiatan 2
+                </span>
+              </div>
+              <div class="p-5">
+                <span class="text-[11px] font-mono font-bold text-sman-blue uppercase tracking-wider">Kegiatan Rohani Kristen</span>
+                <h4 class="text-lg font-bold text-sman-navy mt-1">Persekutuan Jumat</h4>
+                <p class="text-xs sm:text-sm text-sman-muted mt-1.5 leading-relaxed">
+                  Kegiatan pembinaan iman, persekutuan, dan penguatan karakter peserta didik.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- ISLAM -->
+        <div id="spiritual-islam" class="spiritual-gallery-content hidden space-y-6 animate-fade-in-up">
+          <div>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-sman-navy">Ibadah &amp; Pembinaan Rohani Islam</h3>
+            <p class="text-xs sm:text-sm text-sman-muted mt-1">
+              Dokumentasi pembiasaan ibadah pagi, tadarus, dan penguatan karakter spiritual murid.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <article class="group rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300">
+              <div class="aspect-video overflow-hidden bg-slate-200 relative">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1Puwfie4By5Exz2HuMxSY6Biz1cHp-QBK&sz=w900"
+                  alt="Ibadah Bersama Islam SMAN 1 Kota Depok"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  onerror="this.src='https://drive.google.com/thumbnail?id=1F20chHve1L2sbb7IN_xNOfvxDc1gENEf&sz=w900'"
+                />
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-sman-navy/80 text-white text-[11px] font-mono backdrop-blur-sm">
+                  Kegiatan 1
+                </span>
+              </div>
+              <div class="p-5">
+                <span class="text-[11px] font-mono font-bold text-amber-700 uppercase tracking-wider">Kegiatan Rohani Islam</span>
+                <h4 class="text-lg font-bold text-sman-navy mt-1">Tilawah</h4>
+                <p class="text-xs sm:text-sm text-sman-muted mt-1.5 leading-relaxed">
+                  Kegiatan ibadah pagi bersama, tadarus Al-Qur'an, dan pembiasaan nilai keagamaan.
+                </p>
+              </div>
+            </article>
+
+            <article class="group rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300">
+              <div class="aspect-video overflow-hidden bg-slate-200 relative">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1LsNNZedgjmeWCjCE90rm6Iot_nlf67gl&sz=w900"
+                  alt="Kegiatan Keagamaan Islam SMAN 1 Kota Depok"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  onerror="this.src='https://drive.google.com/thumbnail?id=1F20chHve1L2sbb7IN_xNOfvxDc1gENEf&sz=w900'"
+                />
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-sman-navy/80 text-white text-[11px] font-mono backdrop-blur-sm">
+                  Kegiatan 2
+                </span>
+              </div>
+              <div class="p-5">
+                <span class="text-[11px] font-mono font-bold text-amber-700 uppercase tracking-wider">Kegiatan Rohani Islam</span>
+                <h4 class="text-lg font-bold text-sman-navy mt-1">Sholat Dhuha</h4>
+                <p class="text-xs sm:text-sm text-sman-muted mt-1.5 leading-relaxed">
+                  Kegiatan kerohanian keislaman, kajian pagi, dan penguatan karakter peserta didik.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- FOOTER LANDING PAGE -->
     <footer class="bg-sman-navy text-slate-200 pt-14 pb-10 border-t-4 border-sman-gold">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1508,7 +1651,7 @@ for term, val in sorted(zip(vec.get_feature_names_out(), scores), key=lambda x: 
         tag: "INSIGHT #06 • PERBEDAAN ANTAR KELAS",
         title: "Pola Sarapan Berbeda Signifikan Antar Tingkat Kelas",
         body: "Uji Kruskal–Wallis menunjukkan perbedaan signifikan frekuensi sarapan antarkelas 10, 11, dan 12 (H = 12,9709; p = 0,00153), mencerminkan dinamika rutinitas pagi yang berbeda di tiap jenjang.",
-        action: "Sesuaikan strategi pembiasaan pagi per jenjang kelas serta lakukan uji lanjutan Dunn's post-hoc dan effect size di notebook analisis."
+        action: "Sekolah dapat bekerja sama dengan pihak kantin untuk menyediakan opsi 'menu sarapan sehat kilat' yang terjangkau dan siap saji sebelum jam pelajaran pertama dimulai."
       }
     ];
 
@@ -1854,6 +1997,24 @@ for term, val in sorted(zip(vec.get_feature_names_out(), scores), key=lambda x: 
         btn.textContent = 'Tersalin!';
         setTimeout(() => { btn.textContent = old; }, 1600);
       });
+    }
+
+    // Spiritual Gallery Tab Switcher
+    function showSpiritualGallery(category, button) {
+      document.querySelectorAll('.spiritual-gallery-content').forEach((content) => {
+        content.classList.add('hidden');
+      });
+
+      document.querySelectorAll('.spiritual-tab-btn').forEach((tab) => {
+        tab.className = 'spiritual-tab-btn px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-sman-muted border border-slate-200 hover:bg-slate-100 hover:text-sman-navy transition-all duration-200 cursor-pointer';
+      });
+
+      const selectedContent = document.getElementById('spiritual-' + category);
+      if (selectedContent) {
+        selectedContent.classList.remove('hidden');
+      }
+
+      button.className = 'spiritual-tab-btn px-5 py-2.5 rounded-xl text-sm font-bold bg-sman-navy text-white border border-sman-navy shadow-sm transition-all duration-200 cursor-pointer';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
