@@ -3,788 +3,730 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>G7KAIH Analytics — SMAN 1 Kota Depok | Riset & Dashboard Kebiasaan Pelajar</title>
-
-  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Tailwind CSS -->
+  <title>G7KAIH Analytics — SMAN 1 Kota Depok</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Chart.js for Interactive Data Visualizations -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['Plus Jakarta Sans', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            navy: {
-              900: '#0F172A',
-              800: '#1E293B',
-              700: '#334155',
-            },
-            royal: {
-              600: '#2563EB',
-              700: '#1D4ED8',
-              50: '#EFF6FF',
-            },
-            emerald: {
-              600: '#0D9488',
-              500: '#14B8A6',
-              50: '#F0FDFA',
-            },
-            amber: {
-              500: '#F59E0B',
-              600: '#D97706',
-              50: '#FFFBEB',
-            },
+            sman: {
+              navy: '#0F294A',
+              blue: '#1E4E8C',
+              sky: '#2B7DE9',
+              gold: '#D99B26',
+              goldLight: '#F6E2B3',
+              emerald: '#0D9488',
+              surface: '#F4F7FB',
+              card: '#FFFFFF',
+              ink: '#0F172A',
+              muted: '#475569'
+            }
           },
-        },
-      },
-    };
+          animation: {
+            'float-slow': 'floatBubble 9s ease-in-out infinite',
+            'float-med': 'floatBubbleAlt 7.5s ease-in-out infinite',
+            'float-fast': 'floatBubbleSlow 11s ease-in-out infinite',
+            'fade-in-up': 'fadeInUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+          },
+          keyframes: {
+            floatBubble: {
+              '0%, 100%': { transform: 'translateY(0px) translateX(0px) rotate(0deg)' },
+              '33%': { transform: 'translateY(-18px) translateX(10px) rotate(1deg)' },
+              '66%': { transform: 'translateY(10px) translateX(-12px) rotate(-1deg)' }
+            },
+            floatBubbleAlt: {
+              '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
+              '50%': { transform: 'translateY(-22px) translateX(-14px)' }
+            },
+            floatBubbleSlow: {
+              '0%, 100%': { transform: 'translate(0px, 0px)' },
+              '50%': { transform: 'translate(16px, -14px)' }
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(24px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            }
+          }
+        }
+      }
+    }
   </script>
-
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #F8FAFC;
+      background-color: #F4F7FB;
       color: #0F172A;
       overflow-x: hidden;
     }
 
-    h1, h2, h3, h4, .font-display {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+    /* Initial Load Fade */
+    .initial-fade {
+      opacity: 0;
+      animation: pageFadeIn 0.8s ease-out forwards;
+    }
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Glassmorphism Utilities */
-    .glass-light {
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(226, 232, 240, 0.85);
-    }
-
-    .glass-dark {
-      background: rgba(15, 23, 42, 0.72);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-    }
-
-    /* Transparent Chat Bubble Styling */
-    .chat-bubble {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 18px 40px -12px rgba(2, 6, 23, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .chat-bubble:hover {
-      background: rgba(37, 99, 235, 0.22);
-      border-color: rgba(96, 165, 250, 0.75);
-      box-shadow: 0 24px 48px -10px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-      z-index: 40 !important;
-    }
-
-    /* Chat Bubble Tails */
-    .bubble-tail-left::after {
-      content: '';
-      position: absolute;
-      bottom: -9px;
-      left: 24px;
-      width: 18px;
-      height: 18px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(16px);
-      border-right: 1px solid rgba(255, 255, 255, 0.22);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-      transform: rotate(45deg);
-      clip-path: polygon(100% 0, 0 100%, 100% 100%);
-    }
-
-    .bubble-tail-right::after {
-      content: '';
-      position: absolute;
-      bottom: -9px;
-      right: 24px;
-      width: 18px;
-      height: 18px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(16px);
-      border-right: 1px solid rgba(255, 255, 255, 0.22);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-      transform: rotate(45deg);
-      clip-path: polygon(100% 0, 0 100%, 100% 100%);
-    }
-
-    /* Floating Animations for Chat Bubbles */
-    @keyframes floatOne {
-      0%, 100% { transform: translate3d(0px, 0px, 0px); }
-      33% { transform: translate3d(8px, -14px, 0px); }
-      66% { transform: translate3d(-6px, -6px, 0px); }
-    }
-    @keyframes floatTwo {
-      0%, 100% { transform: translate3d(0px, 0px, 0px); }
-      40% { transform: translate3d(-10px, -16px, 0px); }
-      75% { transform: translate3d(7px, -5px, 0px); }
-    }
-    @keyframes floatThree {
-      0%, 100% { transform: translate3d(0px, 0px, 0px); }
-      50% { transform: translate3d(9px, 12px, 0px); }
-    }
-    @keyframes floatFour {
-      0%, 100% { transform: translate3d(0px, 0px, 0px); }
-      35% { transform: translate3d(-8px, 14px, 0px); }
-      70% { transform: translate3d(6px, -10px, 0px); }
-    }
-
-    .animate-float-1 { animation: floatOne 7.5s ease-in-out infinite; }
-    .animate-float-2 { animation: floatTwo 8.8s ease-in-out infinite; }
-    .animate-float-3 { animation: floatThree 6.9s ease-in-out infinite; }
-    .animate-float-4 { animation: floatFour 9.4s ease-in-out infinite; }
-
-    .chat-bubble:hover {
-      animation-play-state: paused;
-    }
-
-    /* Scroll-Triggered Reveal Animations */
+    /* Scroll Reveal Animations */
     .reveal {
       opacity: 0;
+      transform: translateY(28px);
       transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
     }
-    .reveal-up { transform: translateY(38px); }
-    .reveal-left { transform: translateX(-46px); }
-    .reveal-right { transform: translateX(46px); }
-    .reveal-zoom { transform: scale(0.92); }
-
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-36px);
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    /* Stagger Delays */
-    .delay-100 { transition-delay: 100ms; }
-    .delay-200 { transition-delay: 200ms; }
-    .delay-300 { transition-delay: 300ms; }
-    .delay-400 { transition-delay: 400ms; }
-    .delay-500 { transition-delay: 500ms; }
-
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(36px);
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    ::-webkit-scrollbar-track {
-      background: #0F172A;
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.94);
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #2563EB;
+    .is-visible {
+      opacity: 1 !important;
+      transform: translate(0, 0) scale(1) !important;
     }
 
-    /* Subtle Ambient Pulse */
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 0.45; transform: scale(1); }
-      50% { opacity: 0.75; transform: scale(1.08); }
+    /* Full-Viewport Floating Transparent Chat Bubble Stage */
+    .bubble-stage {
+      width: 100vw;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(43, 125, 233, 0.22), transparent 42%),
+        radial-gradient(circle at 85% 25%, rgba(217, 155, 38, 0.20), transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(13, 148, 136, 0.20), transparent 48%),
+        linear-gradient(135deg, #09192F 0%, #0F294A 52%, #153A68 100%);
     }
-    .ambient-orb {
-      animation: pulseGlow 9s ease-in-out infinite;
+
+    .glass-bubble {
+      background: rgba(255, 255, 255, 0.11);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 12px 36px rgba(3, 12, 28, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+    }
+    .glass-bubble:hover {
+      background: rgba(255, 255, 255, 0.19);
+      border-color: rgba(246, 226, 179, 0.75);
+      transform: scale(1.03) translateY(-4px);
+      z-index: 30;
+    }
+
+    .nav-active {
+      background: linear-gradient(135deg, #0F294A, #1E4E8C);
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 14px rgba(15, 41, 74, 0.25);
+    }
+
+    .hero-parallax-bg {
+      will-change: transform;
+      transform: translate3d(0, 0, 0) scale(1.08);
     }
   </style>
 </head>
-<body class="antialiased selection:bg-royal-600 selection:text-white">
+<body class="initial-fade font-sans antialiased selection:bg-sman-gold selection:text-sman-navy">
 
-  <!-- ===================================================================== -->
-  <!-- GLOBAL STICKY NAVIGATION BAR                                          -->
-  <!-- ===================================================================== -->
-  <header id="main-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-light border-b border-slate-200/80">
+  <!-- NAVBAR -->
+  <header id="main-navbar" class="sticky top-0 z-50 bg-white/92 backdrop-blur-md border-b border-slate-200/80 shadow-sm transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 sm:h-18">
-        <!-- Brand / Logo -->
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <!-- Brand Logo -->
         <button onclick="switchPage('landing')" class="flex items-center gap-3 text-left group focus:outline-none">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-navy-900 via-royal-600 to-emerald-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
-            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+          <div class="w-11 h-11 rounded-xl bg-sman-navy/5 border border-sman-gold/50 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-105 transition">
+            <img
+              id="school-logo-img"
+              src="https://drive.google.com/thumbnail?id=1pSemN-px2nRwSxuAa7LRH6oEZD4TFipG&sz=w200"
+              alt="Logo SMAN 1 Kota Depok"
+              class="w-9 h-9 object-contain"
+              onerror="this.style.display='none'; document.getElementById('logo-fallback').classList.remove('hidden');"
+            />
+            <span id="logo-fallback" class="hidden font-extrabold text-sman-navy text-sm tracking-tight">S1D</span>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-display font-extrabold text-base sm:text-lg tracking-tight text-navy-900">SMANSA DataLab</span>
-              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-royal-50 text-royal-600 border border-royal-600/20">G7KAIH</span>
+              <span class="font-extrabold text-sman-navy text-base md:text-lg tracking-tight">G7KAIH Analytics</span>
+              <span class="hidden sm:inline-block text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-sman-goldLight text-sman-navy border border-sman-gold/40">
+                SMAN 1 DEPOK
+              </span>
             </div>
-            <p class="text-[11px] text-slate-500 font-medium leading-none mt-0.5">SMAN 1 Kota Depok • Riset Pelajar</p>
+            <p class="text-[11px] md:text-xs text-sman-muted font-medium">7 Kebiasaan Anak Indonesia Hebat • Riset &amp; Dashboard</p>
           </div>
         </button>
 
-        <!-- Center Navigation Links (Dynamic per Active Page) -->
-        <nav id="landing-quick-links" class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
-          <a href="#tentang-tim" class="hover:text-royal-600 transition-colors">Tim Riset</a>
-          <a href="#visi-misi" class="hover:text-royal-600 transition-colors">Visi & Misi</a>
-          <a href="#permasalahan" class="hover:text-royal-600 transition-colors">Permasalahan</a>
-          <a href="#tujuan-sistem" class="hover:text-royal-600 transition-colors">Tujuan</a>
-          <a href="#solusi-strategis" class="hover:text-royal-600 transition-colors">Solusi</a>
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-2">
+          <button id="btn-nav-landing" onclick="switchPage('landing')" class="nav-active px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer">
+            Landing Page
+          </button>
+          <button id="btn-nav-dashboard" onclick="switchPage('dashboard')" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-sman-navy hover:bg-slate-100 transition-all duration-200 cursor-pointer">
+            Dashboard Analisis
+          </button>
+          <a href="#tim-peneliti" onclick="ensureLandingAndScroll('#tim-peneliti')" class="px-3.5 py-2 rounded-xl text-sm font-medium text-sman-muted hover:text-sman-navy hover:bg-slate-100 transition">
+            Tim &amp; Pembina
+          </a>
+          <a href="#solusi-g7kaih" onclick="ensureLandingAndScroll('#solusi-g7kaih')" class="px-3.5 py-2 rounded-xl text-sm font-medium text-sman-muted hover:text-sman-navy hover:bg-slate-100 transition">
+            Solusi
+          </a>
         </nav>
 
-        <nav id="dashboard-quick-links" class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
-          <a href="#floating-insights-stage" class="hover:text-royal-600 transition-colors">Floating Insights</a>
-          <a href="#analytics-charts" class="hover:text-royal-600 transition-colors">Visualisasi Data</a>
-          <a href="#statistical-correlations" class="hover:text-royal-600 transition-colors">Uji Korelasi</a>
-          <a href="#python-methodology" class="hover:text-royal-600 transition-colors">Metode Python</a>
-        </nav>
-
-        <!-- Page Switcher Tabs / CTA -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          <div class="inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200/90">
-            <button id="tab-landing" onclick="switchPage('landing')" class="px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 bg-white text-navy-900 shadow-sm">
-              Beranda
-            </button>
-            <button id="tab-dashboard" onclick="switchPage('dashboard')" class="px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-navy-900 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Dashboard Insight
-            </button>
-          </div>
+        <!-- Mobile Burger Button -->
+        <div class="md:hidden flex items-center">
+          <button id="burger-btn" onclick="toggleMobileMenu()" aria-label="Buka Menu Navigasi" class="p-2.5 rounded-xl border border-slate-200 text-sman-navy hover:bg-slate-100 focus:outline-none transition">
+            <svg id="burger-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg id="burger-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
         </div>
+      </div>
+
+      <!-- Mobile Dropdown Menu -->
+      <div id="mobile-menu" class="hidden md:hidden pb-4 pt-1 border-t border-slate-100 space-y-1.5">
+        <button onclick="switchPage('landing'); closeMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold bg-sman-navy text-white">
+          Halaman 1: Landing Page
+        </button>
+        <button onclick="switchPage('dashboard'); closeMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-sman-navy hover:bg-slate-100">
+          Halaman 2: Dashboard Analisis &amp; Insight
+        </button>
+        <button onclick="ensureLandingAndScroll('#visi-misi'); closeMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-sman-muted hover:bg-slate-100">
+          Visi &amp; Misi Sekolah
+        </button>
+        <button onclick="ensureLandingAndScroll('#tim-peneliti'); closeMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-sman-muted hover:bg-slate-100">
+          Tim Peneliti &amp; Guru Pembimbing
+        </button>
+        <button onclick="ensureLandingAndScroll('#solusi-g7kaih'); closeMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-sman-muted hover:bg-slate-100">
+          Permasalahan &amp; Solusi G7KAIH
+        </button>
       </div>
     </div>
   </header>
 
   <!-- ===================================================================== -->
-  <!-- PAGE 1: LANDING PAGE (BISNIS & RISET PROFESIONAL)                     -->
+  <!-- PAGE 1: LANDING PAGE                                                  -->
   <!-- ===================================================================== -->
-  <main id="page-landing" class="pt-16">
-    
-    <!-- 1. HERO SECTION WITH PARALLAX -->
-    <section class="relative min-h-[92vh] flex items-center overflow-hidden bg-navy-900 text-white">
-      <!-- Parallax Geometric & Ambient Layers -->
-      <div id="parallax-bg-grid" class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#60A5FA 1px, transparent 1px); background-size: 36px 36px;"></div>
-      <div id="parallax-orb-1" class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-royal-600/30 blur-3xl pointer-events-none"></div>
-      <div id="parallax-orb-2" class="absolute top-1/3 -right-24 w-[28rem] h-[28rem] rounded-full bg-emerald-600/25 blur-3xl pointer-events-none"></div>
-      <div id="parallax-orb-3" class="absolute -bottom-24 left-1/3 w-80 h-80 rounded-full bg-amber-500/15 blur-3xl pointer-events-none"></div>
+  <main id="page-landing" class="block">
 
-      <!-- Floating Decorative Geometric Cards (Parallax Foreground) -->
-      <div id="parallax-float-card" class="hidden xl:block absolute right-12 top-28 w-72 p-4 rounded-2xl glass-dark border border-white/15 shadow-2xl pointer-events-none">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">Live Survey Dataset</span>
-          <span class="px-2 py-0.5 text-[10px] rounded-full bg-emerald-500/20 text-emerald-300 font-bold">Valid N=658</span>
-        </div>
-        <p class="text-xs text-slate-300 leading-relaxed">Analisis empiris 37 variabel kebiasaan pelajar SMA Negeri 1 Kota Depok (Kelas X, XI, XII).</p>
-        <div class="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-          <span class="text-slate-400">Tingkat Pemahaman</span>
-          <span class="font-bold text-white">86,3% Tinggi</span>
-        </div>
-      </div>
+    <!-- HERO SECTION WITH SCHOOL FRONT PHOTO & PARALLAX -->
+    <section class="relative min-h-[86vh] flex items-center overflow-hidden bg-sman-navy text-white">
+      <div
+        id="hero-parallax-layer"
+        class="hero-parallax-bg absolute inset-0 bg-cover bg-center opacity-45"
+        style="background-image: url('https://drive.google.com/thumbnail?id=1X_XSitTKnfcZ2SV9ATFJiahq8iAHWlkd&sz=w1600');"
+      ></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-sman-navy/95 via-sman-navy/80 to-sman-blue/65"></div>
 
-      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-        <div class="max-w-3xl">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs sm:text-sm font-medium text-blue-200 mb-6 backdrop-blur-md">
-            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
-            <span>Inisiatif Riset Karakter & Data Science SMAN 1 Kota Depok</span>
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="max-w-3xl space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/12 border border-sman-gold/50 text-sman-goldLight text-xs font-mono font-semibold backdrop-blur-sm animate-fade-in-up">
+            <span>SMA NEGERI 1 KOTA DEPOK</span>
+            <span>•</span>
+            <span>N = 658 RESPONDEN (KELAS X, XI, XII)</span>
           </div>
 
-          <h1 class="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-white">
-            Transformasi Karakter & Kedisiplinan Pelajar Berbasis <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-teal-300 to-amber-300">Analitik Data G7KAIH</span>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] animate-fade-in-up" style="animation-delay:0.1s">
+            Mewujudkan Generasi Unggul Melalui <span class="text-sman-gold">7 Kebiasaan Anak Indonesia Hebat</span>
           </h1>
 
-          <p class="mt-6 text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
-            Menjembatani kebijakan <strong class="text-white">Gerakan 7 Kebiasaan Anak Indonesia Hebat</strong> dengan realita keseharian <strong class="text-white">658 siswa SMAN 1 Kota Depok</strong> melalui pemodelan statistik, klastering perilaku, dan solusi intervensi sekolah yang tepat sasaran.
+          <p class="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl animate-fade-in-up" style="animation-delay:0.2s">
+            Platform riset empiris, pemodelan statistik lanjutan, dan dashboard interaktif untuk memetakan kebiasaan harian, tantangan kedisiplinan, pola belajar, serta kehidupan sosial siswa SMAN 1 Kota Depok secara terukur.
           </p>
 
-          <div class="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            <button onclick="switchPage('dashboard')" class="px-7 py-4 rounded-xl bg-royal-600 hover:bg-royal-700 text-white font-semibold text-sm sm:text-base shadow-lg shadow-royal-600/30 hover:shadow-royal-600/50 transition-all flex items-center justify-center gap-2.5 group">
-              <span>Buka Dashboard Insight</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+          <div class="flex flex-wrap items-center gap-4 pt-2 animate-fade-in-up" style="animation-delay:0.3s">
+            <button onclick="switchPage('dashboard')" class="px-6 py-3.5 rounded-xl bg-sman-gold hover:bg-amber-500 text-sman-navy font-extrabold text-sm sm:text-base shadow-lg shadow-amber-500/25 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
+              Buka Dashboard &amp; Bubble Insight →
             </button>
-            <a href="#tentang-tim" class="px-7 py-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2">
-              <i data-lucide="compass" class="w-4 h-4 text-teal-300"></i>
-              <span>Jelajahi Profil Riset</span>
+            <a href="#permasalahan" class="px-6 py-3.5 rounded-xl bg-white/12 hover:bg-white/20 border border-white/25 text-white font-semibold text-sm sm:text-base backdrop-blur-sm transition">
+              Pelajari Riset &amp; Solusi
             </a>
           </div>
 
-          <!-- Hero Metrics Strip -->
-          <div class="mt-14 pt-8 border-t border-white/15 grid grid-cols-2 sm:grid-cols-4 gap-6">
-            <div>
-              <p class="font-display text-2xl sm:text-3xl font-extrabold text-white">658</p>
-              <p class="text-xs sm:text-sm text-slate-400 mt-1">Responden Siswa Valid</p>
+          <!-- Quick KPI Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-white/15">
+            <div class="bg-white/8 backdrop-blur-sm rounded-xl p-3.5 border border-white/10">
+              <div class="text-2xl font-extrabold text-sman-gold">658</div>
+              <div class="text-xs text-slate-300">Total Siswa Survei</div>
             </div>
-            <div>
-              <p class="font-display text-2xl sm:text-3xl font-extrabold text-teal-400">7 Pilar</p>
-              <p class="text-xs sm:text-sm text-slate-400 mt-1">Kebiasaan Utama G7KAIH</p>
+            <div class="bg-white/8 backdrop-blur-sm rounded-xl p-3.5 border border-white/10">
+              <div class="text-2xl font-extrabold text-white">86,3%</div>
+              <div class="text-xs text-slate-300">Memahami G7KAIH</div>
             </div>
-            <div>
-              <p class="font-display text-2xl sm:text-3xl font-extrabold text-amber-400">37</p>
-              <p class="text-xs sm:text-sm text-slate-400 mt-1">Variabel Perilaku & Tidur</p>
+            <div class="bg-white/8 backdrop-blur-sm rounded-xl p-3.5 border border-white/10">
+              <div class="text-2xl font-extrabold text-emerald-300">56,1%</div>
+              <div class="text-xs text-slate-300">Tidur Hanya 5–6 Jam</div>
             </div>
-            <div>
-              <p class="font-display text-2xl sm:text-3xl font-extrabold text-blue-400">4 Model</p>
-              <p class="text-xs sm:text-sm text-slate-400 mt-1">Algoritma Python Colab</p>
+            <div class="bg-white/8 backdrop-blur-sm rounded-xl p-3.5 border border-white/10">
+              <div class="text-2xl font-extrabold text-sman-goldLight">6 Metode</div>
+              <div class="text-xs text-slate-300">Statistik &amp; ML/NLP</div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 2. PERKENALAN TIM SEKOLAH -->
-    <section id="tentang-tim" class="py-20 lg:py-28 bg-slate-50 relative">
+    <!-- PERMASALAHAN & TUJUAN PEMBANGUNAN DASHBOARD -->
+    <section id="permasalahan" class="py-20 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center reveal reveal-up">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-royal-50 text-royal-600 border border-royal-600/20">
-            <i data-lucide="users" class="w-3.5 h-3.5"></i> Tim Peneliti & Pengembang
-          </span>
-          <h2 class="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-navy-900 tracking-tight">
-            Kolaborasi Siswa & Pembimbing SMAN 1 Kota Depok
-          </h2>
-          <p class="mt-4 text-slate-600 text-base sm:text-lg">
-            Kami adalah tim multidisiplin yang menggabungkan kepekaan sosial lingkungan sekolah dengan pendekatan sains data modern untuk menerjemahkan suara siswa menjadi kebijakan nyata.
-          </p>
-        </div>
-
-        <div class="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <!-- Team Card 1 -->
-          <div class="reveal reveal-left delay-100 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-royal-600 to-navy-900 text-white flex items-center justify-center font-display font-bold text-xl shadow-md mb-5">
-              AR
-            </div>
-            <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-royal-50 text-royal-600 mb-2">
-              Ketua Tim Riset & Data Scientist
+        <div class="grid lg:grid-cols-12 gap-12 items-start">
+          <div class="lg:col-span-6 space-y-6 reveal-left">
+            <span class="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sman-navy/10 text-sman-navy">
+              Permasalahan Riil Siswa
             </span>
-            <h3 class="font-display text-lg font-bold text-navy-900">Arief Ramadhan</h3>
-            <p class="text-xs font-medium text-slate-400 mb-3">Siswa Kelas XI MIPA • SMAN 1 Depok</p>
-            <p class="text-sm text-slate-600 leading-relaxed mb-4">
-              Memimpin arsitektur pemodelan statistik, uji hipotesis Chi-Square, dan klastering K-Means di Google Colab.
-            </p>
-            <div class="flex flex-wrap gap-1.5 pt-3 border-t border-slate-100">
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">Python</span>
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">Scikit-Learn</span>
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">Statistika</span>
-            </div>
-          </div>
-
-          <!-- Team Card 2 -->
-          <div class="reveal reveal-up delay-200 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-800 text-white flex items-center justify-center font-display font-bold text-xl shadow-md mb-5">
-              ND
-            </div>
-            <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-600 mb-2">
-              Analis Perilaku & Kedisiplinan
-            </span>
-            <h3 class="font-display text-lg font-bold text-navy-900">Nadia Putri Maharani</h3>
-            <p class="text-xs font-medium text-slate-400 mb-3">Siswi Kelas XI IPS • Pengurus OSIS</p>
-            <p class="text-sm text-slate-600 leading-relaxed mb-4">
-              Mengkaji korelasi psikososial pelajar, pola manajemen waktu, serta merancang intervensi peer-group di lingkungan sekolah.
-            </p>
-            <div class="flex flex-wrap gap-1.5 pt-3 border-t border-slate-100">
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">Riset Sosial</span>
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">Psikologi Pelajar</span>
-            </div>
-          </div>
-
-          <!-- Team Card 3 -->
-          <div class="reveal reveal-up delay-300 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center font-display font-bold text-xl shadow-md mb-5">
-              DF
-            </div>
-            <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-600 mb-2">
-              Pengembang Sistem & Visualisasi
-            </span>
-            <h3 class="font-display text-lg font-bold text-navy-900">Dimas Fajar Pratama</h3>
-            <p class="text-xs font-medium text-slate-400 mb-3">Siswa Kelas XII • Ekstrakurikuler IT</p>
-            <p class="text-sm text-slate-600 leading-relaxed mb-4">
-              Merancang dashboard analitik interaktif dan visualisasi data real-time agar temuan mudah dipahami seluruh warga sekolah.
-            </p>
-            <div class="flex flex-wrap gap-1.5 pt-3 border-t border-slate-100">
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">Data Viz</span>
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">UI/UX Web</span>
-            </div>
-          </div>
-
-          <!-- Team Card 4 -->
-          <div class="reveal reveal-right delay-400 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-700 to-navy-900 text-white flex items-center justify-center font-display font-bold text-xl shadow-md mb-5">
-              SR
-            </div>
-            <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-navy-900 mb-2">
-              Guru Pembimbing Riset & BK
-            </span>
-            <h3 class="font-display text-lg font-bold text-navy-900">Dra. Sri Rahayu, M.Pd.</h3>
-            <p class="text-xs font-medium text-slate-400 mb-3">Pembina Kesiswaan • SMAN 1 Depok</p>
-            <p class="text-sm text-slate-600 leading-relaxed mb-4">
-              Menyelaraskan rekomendasi analitik dengan program pembinaan karakter sekolah, bimbingan konseling, dan peran orang tua.
-            </p>
-            <div class="flex flex-wrap gap-1.5 pt-3 border-t border-slate-100">
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">Kebijakan Sekolah</span>
-              <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-medium">Konseling</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. VISI & MISI TIM DAN SEKOLAH -->
-    <section id="visi-misi" class="py-20 bg-white border-y border-slate-200/80 overflow-hidden">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center reveal reveal-up">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-600/20">
-            <i data-lucide="target" class="w-3.5 h-3.5"></i> Arah & Komitmen
-          </span>
-          <h2 class="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-navy-900 tracking-tight">
-            Visi & Misi Sekolah serta Tim Riset
-          </h2>
-          <p class="mt-4 text-slate-600 text-base">
-            Menyatukan nilai luhur pendidikan SMAN 1 Kota Depok dengan ketajaman pengambilan keputusan berbasis bukti empiris (*evidence-based education*).
-          </p>
-        </div>
-
-        <div class="mt-14 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <!-- Visi Card (Reveal from Left) -->
-          <div class="reveal reveal-left bg-gradient-to-br from-navy-900 via-slate-900 to-royal-950 text-white rounded-3xl p-8 sm:p-10 shadow-xl relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-royal-600/20 blur-2xl"></div>
-            <div class="w-12 h-12 rounded-2xl bg-royal-600/30 border border-royal-400/30 flex items-center justify-center text-blue-300 mb-6">
-              <i data-lucide="eye" class="w-6 h-6"></i>
-            </div>
-            <span class="text-xs font-bold uppercase tracking-widest text-blue-300">Visi Bersama</span>
-            <h3 class="mt-2 font-display text-2xl sm:text-3xl font-bold leading-snug">
-              Mewujudkan Ekosistem Pelajar SMAN 1 Kota Depok yang Unggul, Berkarakter Tangguh, Disiplin, dan Berdaya Saing Global Berbasis Budaya Data.
-            </h3>
-            <p class="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
-              Kami percaya bahwa pembentukan 7 Kebiasaan Anak Indonesia Hebat tidak boleh berhenti sebatas slogan, melainkan harus tumbuh menjadi gaya hidup sehat dan sadar diri di setiap ruang kelas maupun di rumah.
-            </p>
-          </div>
-
-          <!-- Misi Card (Reveal from Right) -->
-          <div class="reveal reveal-right bg-slate-50 rounded-3xl p-8 sm:p-10 border border-slate-200/90 shadow-sm">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-emerald-600 mb-6">
-              <i data-lucide="list-checks" class="w-6 h-6"></i>
-            </div>
-            <span class="text-xs font-bold uppercase tracking-widest text-emerald-600">Misi Strategis</span>
-            <h3 class="mt-2 font-display text-2xl font-bold text-navy-900">
-              Empat Pilar Aksi Tim Riset & Sekolah
-            </h3>
-            <ul class="mt-6 space-y-4">
-              <li class="flex items-start gap-3.5">
-                <span class="w-6 h-6 rounded-full bg-royal-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
-                <p class="text-sm sm:text-base text-slate-700"><strong>Pemetaan Empiris Rutin:</strong> Mengukur tingkat penerapan G7KAIH lintas angkatan secara objektif, transparan, dan berkelanjutan.</p>
-              </li>
-              <li class="flex items-start gap-3.5">
-                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
-                <p class="text-sm sm:text-base text-slate-700"><strong>Deteksi Dini Hambatan Pelajar:</strong> Mengidentifikasi akar masalah kedisiplinan, kurang tidur kronis, dan distraksi digital sejak dini.</p>
-              </li>
-              <li class="flex items-start gap-3.5">
-                <span class="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
-                <p class="text-sm sm:text-base text-slate-700"><strong>Intervensi Humanis & Partisipatif:</strong> Merumuskan program solusi yang lahir dari aspirasi siswa sendiri agar relevan dan mudah dijalankan.</p>
-              </li>
-              <li class="flex items-start gap-3.5">
-                <span class="w-6 h-6 rounded-full bg-navy-900 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
-                <p class="text-sm sm:text-base text-slate-700"><strong>Sinergi Sekolah & Keluarga:</strong> Menyediakan dashboard visual sebagai jembatan komunikasi antara guru BK, wali kelas, dan orang tua.</p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. PERMASALAHAN NYATA YANG DIHADAPI (PROBLEM STATEMENT) -->
-    <section id="permasalahan" class="py-20 lg:py-28 bg-slate-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center reveal reveal-up">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-600 border border-amber-500/20">
-            <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Temuan Masalah Lapangan
-          </span>
-          <h2 class="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-navy-900 tracking-tight">
-            4 Permasalahan Riil Siswa SMA dalam Menerapkan G7KAIH
-          </h2>
-          <p class="mt-4 text-slate-600 text-base">
-            Meskipun <strong>86,3% siswa</strong> sudah memahami konsep G7KAIH dengan baik, data lapangan mengungkap kesenjangan besar antara pengetahuan dan kebiasaan harian.
-          </p>
-        </div>
-
-        <div class="mt-14 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          <!-- Problem 1 -->
-          <div class="reveal reveal-left delay-100 bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:border-royal-600/40 transition-all">
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-royal-50 text-royal-600 flex items-center justify-center">
-                <i data-lucide="moon" class="w-6 h-6"></i>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600">66,4% Kurang Tidur</span>
-            </div>
-            <h3 class="font-display text-xl font-bold text-navy-900">1. Paradoks Bangun Pagi vs. Kurang Tidur Kronis</h3>
-            <p class="mt-2.5 text-sm text-slate-600 leading-relaxed">
-              Sebanyak <strong>72,8% siswa</strong> berhasil bangun sebelum pukul 05.00, namun <strong>66,4% tidur ≤ 6 jam</strong> (bahkan 10,3% di bawah 5 jam) karena baru tidur pukul 22.00 hingga lewat tengah malam. Akibatnya, siswa hadir fisik di sekolah namun mengalami kelelahan kognitif di kelas.
-            </p>
-          </div>
-
-          <!-- Problem 2 -->
-          <div class="reveal reveal-right delay-200 bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:border-royal-600/40 transition-all">
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                <i data-lucide="smartphone" class="w-6 h-6"></i>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700">59,4% Terdistraksi Gawai</span>
-            </div>
-            <h3 class="font-display text-xl font-bold text-navy-900">2. Lingkaran Distraksi Gawai & Media Sosial</h3>
-            <p class="mt-2.5 text-sm text-slate-600 leading-relaxed">
-              Penggunaan ponsel, media sosial, dan game digital menjadi faktor pemicu tidur larut sekaligus penghambat utama belajar mandiri. Alih-alih menjadi alat bantu belajar, gawai tanpa batasan waktu menggerus jam istirahat dan fokus akademik siswa.
-            </p>
-          </div>
-
-          <!-- Problem 3 -->
-          <div class="reveal reveal-left delay-300 bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:border-royal-600/40 transition-all">
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <i data-lucide="utensils" class="w-6 h-6"></i>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">Turun 17,8% di Kelas XII</span>
-            </div>
-            <h3 class="font-display text-xl font-bold text-navy-900">3. Penurunan Konsistensi Sarapan pada Jenjang Lebih Tinggi</h3>
-            <p class="mt-2.5 text-sm text-slate-600 leading-relaxed">
-              Uji statistik menunjukkan korelasi sangat signifikan (<em>p = 0.00014</em>): kebiasaan selalu sarapan merosot tajam dari <strong>45,9% di Kelas 10</strong> menjadi hanya <strong>28,1% di Kelas 12</strong>. Melewatkan sarapan berdampak langsung pada turunnya stamina dan konsentrasi belajar pagi.
-            </p>
-          </div>
-
-          <!-- Problem 4 -->
-          <div class="reveal reveal-right delay-400 bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:border-royal-600/40 transition-all">
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                <i data-lucide="clock" class="w-6 h-6"></i>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700">82,8% Beban Jadwal</span>
-            </div>
-            <h3 class="font-display text-xl font-bold text-navy-900">4. Padatnya Jadwal Akademik & Krisis Manajemen Waktu</h3>
-            <p class="mt-2.5 text-sm text-slate-600 leading-relaxed">
-              Sebanyak <strong>545 dari 658 siswa (82,8%)</strong> mengeluhkan jadwal sekolah, ekstrakurikuler, dan tumpukan tugas sebagai penghambat utama. Banyak siswa belum menguasai teknik penjadwalan efektif sehingga waktu olahraga (3,6% prioritas) dan sosialisasi terpinggirkan.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. TUJUAN PEMBANGUNAN DASHBOARD -->
-    <section id="tujuan-sistem" class="py-20 bg-navy-900 text-white relative overflow-hidden">
-      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#38BDF8 1px, transparent 1px); background-size: 28px 28px;"></div>
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div class="lg:col-span-5 reveal reveal-left">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30">
-              <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Tujuan Pembangunan Sistem
-            </span>
-            <h2 class="mt-4 font-display text-3xl sm:text-4xl font-extrabold leading-tight">
-              Mengapa Dashboard Analitik G7KAIH Ini Dibangun?
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-sman-navy leading-tight">
+              Tantangan Penerapan G7KAIH di Lingkungan Sekolah &amp; Rumah
             </h2>
-            <p class="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
-              Data mentah ribuan baris sering kali sulit dibaca dan berakhir menjadi arsip mati. Dashboard ini mengubah data survei SMAN 1 Kota Depok menjadi <strong>kompas keputusan strategis</strong> bagi tiga pilar ekosistem sekolah.
+            <p class="text-sman-muted leading-relaxed">
+              Meskipun mayoritas murid SMAN 1 Kota Depok sudah mengenal dan memahami G7KAIH, realitas keseharian menunjukkan tekanan ritme akademik, gawai, serta manajemen waktu yang memengaruhi kedisiplinan, belajar mandiri, dan interaksi sosial.
             </p>
-            <div class="mt-8">
-              <button onclick="switchPage('dashboard')" class="px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-lg transition-all inline-flex items-center gap-2">
-                <span>Eksplorasi Dashboard Sekarang</span>
-                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
-              </button>
+
+            <div class="grid sm:grid-cols-2 gap-4 pt-2">
+              <div class="p-5 rounded-2xl bg-sman-surface border border-slate-200/90 hover:border-sman-navy/40 transition">
+                <div class="text-xs font-mono font-bold text-sman-blue mb-1">01 • KEDISIPLINAN TIDUR</div>
+                <h3 class="font-bold text-sman-navy mb-1.5">Defisit Durasi Tidur Malam</h3>
+                <p class="text-sm text-sman-muted">Mayoritas murid tidur 5–6 jam per malam akibat begadang, tugas padat, dan penggunaan gawai menjelang istirahat.</p>
+              </div>
+              <div class="p-5 rounded-2xl bg-sman-surface border border-slate-200/90 hover:border-sman-navy/40 transition">
+                <div class="text-xs font-mono font-bold text-sman-gold mb-1">02 • KEGIATAN BELAJAR</div>
+                <h3 class="font-bold text-sman-navy mb-1.5">Distraksi Digital &amp; Manajemen Waktu</h3>
+                <p class="text-sm text-sman-muted">Jadwal padat dan notifikasi gawai/media sosial membuat belajar mandiri sering terpotong dan kurang terstruktur.</p>
+              </div>
+              <div class="p-5 rounded-2xl bg-sman-surface border border-slate-200/90 hover:border-sman-navy/40 transition">
+                <div class="text-xs font-mono font-bold text-sman-emerald mb-1">03 • KESEHATAN PAGI</div>
+                <h3 class="font-bold text-sman-navy mb-1.5">Inkonsistensi Sarapan &amp; Aktivitas Fisik</h3>
+                <p class="text-sm text-sman-muted">Sebagian murid masih melewatkan sarapan dan membatasi aktivitas fisik harian di bawah 30 menit.</p>
+              </div>
+              <div class="p-5 rounded-2xl bg-sman-surface border border-slate-200/90 hover:border-sman-navy/40 transition">
+                <div class="text-xs font-mono font-bold text-sman-navy mb-1">04 • KEHIDUPAN SOSIAL</div>
+                <h3 class="font-bold text-sman-navy mb-1.5">Keseimbangan Organisasi &amp; Sosial</h3>
+                <p class="text-sm text-sman-muted">Perlu ruang kolaborasi yang sehat agar kegiatan organisasi, kepedulian sosial, dan waktu pribadi saling menguatkan.</p>
+              </div>
             </div>
           </div>
 
-          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <!-- Purpose 1 -->
-            <div class="reveal reveal-up delay-100 p-6 rounded-2xl glass-dark border border-white/15">
-              <div class="w-11 h-11 rounded-xl bg-royal-600/30 text-blue-300 flex items-center justify-center mb-4">
-                <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-              </div>
-              <h3 class="font-display text-lg font-bold text-white">Bagi Siswa & OSIS</h3>
-              <p class="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Menjadi cermin refleksi diri (*self-awareness*) untuk mengevaluasi jam tidur, pola belajar mandiri berbasis AI/video, dan keseimbangan hidup sosial.
+          <div class="lg:col-span-6 reveal-right">
+            <div class="rounded-3xl bg-gradient-to-br from-sman-navy to-sman-blue text-white p-8 sm:p-10 shadow-xl relative overflow-hidden">
+              <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-sman-gold/20 blur-2xl"></div>
+              <span class="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-white/15 text-sman-goldLight mb-4">
+                Tujuan Pembangunan Dashboard
+              </span>
+              <h3 class="text-2xl sm:text-3xl font-extrabold mb-4">
+                Dari Data Survei Menjadi Kebijakan &amp; Kebiasaan Nyata
+              </h3>
+              <p class="text-slate-200 text-sm sm:text-base leading-relaxed mb-6">
+                Dashboard ini dirancang untuk mengubah data mentah survei 658 murid menjadi wawasan analitis yang transparan, interaktif, dan dapat ditindaklanjuti oleh tim kesiswaan, wali kelas, pembina organisasi, serta murid sendiri.
               </p>
-            </div>
-
-            <!-- Purpose 2 -->
-            <div class="reveal reveal-up delay-200 p-6 rounded-2xl glass-dark border border-white/15">
-              <div class="w-11 h-11 rounded-xl bg-emerald-600/30 text-teal-300 flex items-center justify-center mb-4">
-                <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+              <ul class="space-y-3.5 text-sm text-slate-100">
+                <li class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-full bg-sman-gold text-sman-navy font-extrabold text-xs flex items-center justify-center shrink-0">✓</span>
+                  <span>Menampilkan <strong>insight utama dalam bubble chat interaktif 100% layar penuh</strong> sebelum membedah statistik dan metode analisis secara mendalam.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-full bg-sman-gold text-sman-navy font-extrabold text-xs flex items-center justify-center shrink-0">✓</span>
+                  <span>Menguji korelasi dan perbedaan antarkelas (X, XI, XII) menggunakan metode non-parametrik, regresi, klasterisasi, dan text mining yang tepat.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-full bg-sman-gold text-sman-navy font-extrabold text-xs flex items-center justify-center shrink-0">✓</span>
+                  <span>Menyediakan peta solusi konkret untuk kedisiplinan, proses belajar, dan kehidupan sosial di dalam maupun luar sekolah.</span>
+                </li>
+              </ul>
+              <div class="mt-8 pt-6 border-t border-white/15 flex items-center justify-between">
+                <span class="text-xs font-mono text-sman-goldLight">Siap mengeksplorasi hasil analisis?</span>
+                <button onclick="switchPage('dashboard')" class="px-4 py-2 rounded-xl bg-white text-sman-navy font-bold text-sm hover:bg-sman-goldLight transition cursor-pointer">
+                  Masuk ke Dashboard →
+                </button>
               </div>
-              <h3 class="font-display text-lg font-bold text-white">Bagi Guru BK & Wali Kelas</h3>
-              <p class="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Memetakan klaster siswa yang rentan kelelahan kronis atau penurunan kedisiplinan sehingga pendampingan konseling lebih personal dan akurat.
-              </p>
-            </div>
-
-            <!-- Purpose 3 -->
-            <div class="reveal reveal-up delay-300 p-6 rounded-2xl glass-dark border border-white/15">
-              <div class="w-11 h-11 rounded-xl bg-amber-500/30 text-amber-300 flex items-center justify-center mb-4">
-                <i data-lucide="building-2" class="w-5 h-5"></i>
-              </div>
-              <h3 class="font-display text-lg font-bold text-white">Bagi Pimpinan Sekolah</h3>
-              <p class="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Menjadi landasan kebijakan kurikulum, pengaturan beban tugas terkoordinasi, serta evaluasi program kantin sehat dan literasi pagi sekolah.
-              </p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 6. SOLUSI STRATEGIS YANG DITAWARKAN -->
-    <section id="solusi-strategis" class="py-20 lg:py-28 bg-white">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center reveal reveal-up">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-royal-50 text-royal-600 border border-royal-600/20">
-            <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i> Rekomendasi Aksi Nyata
+    <!-- VISI MISI TIM & VISI MISI SEKOLAH -->
+    <section id="visi-misi" class="py-20 bg-sman-surface border-y border-slate-200/70">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+        <div class="text-center max-w-3xl mx-auto reveal">
+          <span class="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sman-goldLight text-sman-navy border border-sman-gold/40 mb-3">
+            Arah &amp; Landasan Nilai
           </span>
-          <h2 class="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-navy-900 tracking-tight">
-            4 Solusi Strategis Berbasis Data untuk Ekosistem Sekolah
-          </h2>
-          <p class="mt-4 text-slate-600 text-base">
-            Dirancang untuk menyelesaikan permasalahan kedisiplinan, efektivitas belajar, dan kehidupan sosial siswa baik di sekolah maupun di rumah.
-          </p>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-sman-navy">Visi &amp; Misi Sekolah serta Tim Riset</h2>
+          <p class="text-sman-muted mt-2">Selaras dengan karakter Pancawaluya, budaya mutu SMAN 1 Kota Depok, dan semangat Jawa Barat Istimewa.</p>
         </div>
 
-        <div class="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <!-- Solution 1 -->
-          <div class="reveal reveal-zoom delay-100 rounded-2xl p-6 bg-slate-50 border border-slate-200/90 hover:bg-white hover:shadow-xl transition-all flex flex-col justify-between">
+        <!-- Visi Misi Sekolah -->
+        <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+          <div class="lg:col-span-5 bg-sman-navy text-white rounded-3xl p-8 flex flex-col justify-between shadow-lg reveal-left">
             <div>
-              <div class="w-12 h-12 rounded-2xl bg-navy-900 text-amber-400 flex items-center justify-center mb-5 shadow-sm">
-                <i data-lucide="moon-star" class="w-6 h-6"></i>
-              </div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-royal-600">Kedisiplinan & Istirahat</span>
-              <h3 class="mt-1 font-display text-lg font-bold text-navy-900">Program "Digital Sunset 21:00"</h3>
-              <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-                Kampanye tantangan kolektif mematikan notifikasi media sosial/game mulai pukul 21.00 WIB agar siswa mendapatkan durasi tidur ideal 7–8 jam dan datang ke sekolah dengan energi penuh.
-              </p>
+              <span class="text-xs font-mono uppercase tracking-widest text-sman-gold font-bold">Visi Sekolah</span>
+              <h3 class="text-2xl font-extrabold mt-2 mb-4">SMAN 1 Kota Depok</h3>
+              <blockquote class="text-lg sm:text-xl font-semibold leading-relaxed text-sman-goldLight border-l-4 border-sman-gold pl-4 py-1">
+                “Terwujudnya Manusia Unggul berkarakter Pancawaluya, berjiwa kepemimpinan, Berbudaya Lingkungan, dan berwawasan global untuk Jawa Barat Istimewa.”
+              </blockquote>
             </div>
-            <div class="mt-5 pt-4 border-t border-slate-200/80 text-xs font-semibold text-navy-900 flex items-center justify-between">
-              <span>Target Dampak:</span>
-              <span class="text-emerald-600">+1,5 Jam Tidur Berkualitas</span>
+            <div class="mt-8 pt-6 border-t border-white/15">
+              <span class="text-xs font-mono uppercase tracking-widest text-emerald-300 font-bold block mb-2">Visi Tim Riset G7KAIH</span>
+              <p class="text-sm text-slate-200 leading-relaxed">
+                Menghadirkan riset kebiasaan murid berbasis data yang akurat, empatik, dan aplikatif untuk mendorong pembiasaan positif berkelanjutan di sekolah dan masyarakat.
+              </p>
             </div>
           </div>
 
-          <!-- Solution 2 -->
-          <div class="reveal reveal-zoom delay-200 rounded-2xl p-6 bg-slate-50 border border-slate-200/90 hover:bg-white hover:shadow-xl transition-all flex flex-col justify-between">
+          <div class="lg:col-span-7 bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm space-y-6 reveal-right">
             <div>
-              <div class="w-12 h-12 rounded-2xl bg-royal-600 text-white flex items-center justify-center mb-5 shadow-sm">
-                <i data-lucide="timer" class="w-6 h-6"></i>
-              </div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-royal-600">Kegiatan Belajar Mandiri</span>
-              <h3 class="mt-1 font-display text-lg font-bold text-navy-900">Metode "Pomodoro & AI Co-Pilot"</h3>
-              <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-                Pelatihan manajemen waktu <em>Time-Blocking</em> (25 menit fokus, 5 menit jeda) serta panduan etis memanfaatkan Video Edukasi & AI (34,5% preferensi siswa) untuk mempercepat pemahaman tugas.
-              </p>
+              <span class="text-xs font-mono uppercase tracking-widest text-sman-blue font-bold">Misi Sekolah (6 Pilar Utama)</span>
+              <h3 class="text-2xl font-extrabold text-sman-navy mt-1">Langkah Strategis Pembentukan Karakter &amp; Kompetensi</h3>
             </div>
-            <div class="mt-5 pt-4 border-t border-slate-200/80 text-xs font-semibold text-navy-900 flex items-center justify-between">
-              <span>Target Dampak:</span>
-              <span class="text-emerald-600">Tekan Prokrastinasi Tugas</span>
-            </div>
-          </div>
+            <ol class="space-y-3 text-sm text-sman-ink leading-relaxed">
+              <li class="p-3.5 rounded-xl bg-sman-surface border border-slate-100 flex gap-3">
+                <span class="font-mono font-bold text-sman-navy">01.</span>
+                <span>Menguatkan keimanan, ketakwaan, dan akhlak mulia sebagai landasan SDM Jawa Barat yang berkarakter.</span>
+              </li>
+              <li class="p-3.5 rounded-xl bg-sman-surface border border-slate-100 flex gap-3">
+                <span class="font-mono font-bold text-sman-navy">02.</span>
+                <span>Membudayakan nilai Pancawaluya serta mengembangkan jiwa kepemimpinan berwawasan kebangsaan (Character &amp; Leadership).</span>
+              </li>
+              <li class="p-3.5 rounded-xl bg-sman-surface border border-slate-100 flex gap-3">
+                <span class="font-mono font-bold text-sman-navy">03.</span>
+                <span>Membangun perspektif global murid melalui literasi, IPTEK, teknologi digital, dan kecerdasan artifisial yang etis, serta kolaborasi lintas budaya.</span>
+              </li>
+              <li class="p-3.5 rounded-xl bg-sman-surface border border-slate-100 flex gap-3">
+                <span class="font-mono font-bold text-sman-navy">04.</span>
+                <span>Mengembangkan bakat dan minat murid melalui pemetaan potensi, bimbingan karier, dan persiapan studi lanjut untuk meraih prestasi (Career/Talent Pathway &amp; University Readiness).</span>
+              </li>
+              <li class="p-3.5 rounded-xl bg-sman-surface border border-slate-100 flex gap-3">
+                <span class="font-mono font-bold text-sman-navy">05.</span>
+                <span>Mengembangkan kemampuan berpikir logis, kritis, analitis, dan berbasis data, serta kepedulian terhadap lingkungan dan budaya (Lembur Diurus).</span>
+              </li>
+              <li class="p-3.5 rounded-xl bg-sman-surface border border-slate-100 flex gap-3">
+                <span class="font-mono font-bold text-sman-navy">06.</span>
+                <span>Menjalin kemitraan dengan pemangku kepentingan untuk mewujudkan tata kelola profesional dan lingkungan sekolah yang aman, sehat, asri, dan inklusif (Kota Ditata).</span>
+              </li>
+            </ol>
 
-          <!-- Solution 3 -->
-          <div class="reveal reveal-zoom delay-300 rounded-2xl p-6 bg-slate-50 border border-slate-200/90 hover:bg-white hover:shadow-xl transition-all flex flex-col justify-between">
-            <div>
-              <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center mb-5 shadow-sm">
-                <i data-lucide="apple" class="w-6 h-6"></i>
+            <div class="pt-4 border-t border-slate-200">
+              <span class="text-xs font-mono uppercase tracking-widest text-sman-emerald font-bold block mb-2">Misi Tim Riset G7KAIH</span>
+              <div class="grid sm:grid-cols-3 gap-3 text-xs text-sman-muted">
+                <div class="p-3 rounded-xl bg-teal-50/70 border border-teal-100 text-sman-ink">
+                  <strong>Analisis Kritis:</strong> Mengolah 658 respons survei dengan kaidah statistik non-parametrik &amp; eksplorasi data yang sahih.
+                </div>
+                <div class="p-3 rounded-xl bg-amber-50/70 border border-amber-100 text-sman-ink">
+                  <strong>Visualisasi Transparan:</strong> Menyajikan insight secara intuitif agar mudah dipahami seluruh warga sekolah.
+                </div>
+                <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-100 text-sman-ink">
+                  <strong>Solusi Berdampak:</strong> Merumuskan program praktis bagi kedisiplinan, belajar, dan relasi sosial murid.
+                </div>
               </div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Nutrisi & Stamina Pagi</span>
-              <h3 class="mt-1 font-display text-lg font-bold text-navy-900">Gerakan "Morning Fuel & Hydration"</h3>
-              <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-                Penyediaan pojok sarapan sehat terjangkau di kantin sebelum jam pertama serta pembiasaan membawa botol minum 1,5L, difokuskan khusus untuk siswa Kelas 11 dan 12 yang rawan melewatkan sarapan.
-              </p>
-            </div>
-            <div class="mt-5 pt-4 border-t border-slate-200/80 text-xs font-semibold text-navy-900 flex items-center justify-between">
-              <span>Target Dampak:</span>
-              <span class="text-emerald-600">Fokus Belajar Jam 1–4</span>
-            </div>
-          </div>
-
-          <!-- Solution 4 -->
-          <div class="reveal reveal-zoom delay-400 rounded-2xl p-6 bg-slate-50 border border-slate-200/90 hover:bg-white hover:shadow-xl transition-all flex flex-col justify-between">
-            <div>
-              <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center mb-5 shadow-sm">
-                <i data-lucide="users-round" class="w-6 h-6"></i>
-              </div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Kehidupan Sosial & Olahraga</span>
-              <h3 class="mt-1 font-display text-lg font-bold text-navy-900">"Peer-Support Study & Sport Club"</h3>
-              <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-                Membentuk kelompok sebaya lintas kelas untuk olahraga rutin bersama setiap pekan dan aksi sosial lingkungan sekolah, mengubah interaksi sosial menjadi penguat kebiasaan positif.
-              </p>
-            </div>
-            <div class="mt-5 pt-4 border-t border-slate-200/80 text-xs font-semibold text-navy-900 flex items-center justify-between">
-              <span>Target Dampak:</span>
-              <span class="text-emerald-600">Keseimbangan Sosial & Fisik</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 7. FOOTER PROFESIONAL -->
-    <footer class="bg-navy-900 text-slate-300 border-t border-slate-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          <!-- Brand Info -->
-          <div class="lg:col-span-2">
-            <div class="flex items-center gap-3 text-white">
-              <div class="w-10 h-10 rounded-xl bg-royal-600 flex items-center justify-center">
-                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+    <!-- PERKENALAN TIM PENELITI & GURU PEMBIMBING -->
+    <section id="tim-peneliti" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+        <div class="text-center max-w-3xl mx-auto reveal">
+          <span class="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sman-navy/10 text-sman-navy mb-3">
+            Struktur Tim Riset
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-sman-navy">Tim Peneliti &amp; Guru Pembimbing</h2>
+          <p class="text-sman-muted mt-2">Kolaborasi murid dan guru pembimbing SMAN 1 Kota Depok dalam menyusun kajian kebiasaan G7KAIH.</p>
+        </div>
+
+        <!-- Peneliti (5 Anggota) -->
+        <div>
+          <h3 class="text-lg font-extrabold text-sman-navy mb-6 flex items-center gap-2 reveal">
+            <span class="w-2.5 h-6 rounded-full bg-sman-gold"></span>
+            Tim Peneliti Murid
+          </h3>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
+            <!-- 1 -->
+            <div class="bg-sman-surface rounded-2xl p-4 border border-slate-200/80 hover:shadow-md transition flex flex-col items-center text-center reveal-scale">
+              <div class="w-24 h-24 rounded-2xl overflow-hidden bg-sman-navy/10 border-2 border-sman-gold/50 mb-3">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1qZ_eD_3wHVCGltxiX_jPHW3UL9H1Eq2g&sz=w400"
+                  alt="Achmad Azzam Sofyan Putra"
+                  class="w-full h-full object-cover"
+                  onerror="this.replaceWith(createAvatarFallback('AA', 'Achmad Azzam Sofyan Putra'))"
+                />
+              </div>
+              <h4 class="font-bold text-sman-navy text-sm leading-snug">Achmad Azzam Sofyan Putra</h4>
+              <span class="mt-1.5 inline-block text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-sman-navy text-white">
+                Team Leader
+              </span>
+            </div>
+
+            <!-- 2 -->
+            <div class="bg-sman-surface rounded-2xl p-4 border border-slate-200/80 hover:shadow-md transition flex flex-col items-center text-center reveal-scale">
+              <div class="w-24 h-24 rounded-2xl overflow-hidden bg-sman-navy/10 border-2 border-sman-gold/50 mb-3">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1W3-Xm58oyoOCesUjEDb2XPITuyVMlWjF&sz=w400"
+                  alt="Muhamad Rafisqy Aufansyah"
+                  class="w-full h-full object-cover"
+                  onerror="this.replaceWith(createAvatarFallback('MR', 'Muhamad Rafisqy Aufansyah'))"
+                />
+              </div>
+              <h4 class="font-bold text-sman-navy text-sm leading-snug">Muhamad Rafisqy Aufansyah</h4>
+              <span class="mt-1.5 inline-block text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-sman-blue text-white">
+                Data Analyst
+              </span>
+            </div>
+
+            <!-- 3 -->
+            <div class="bg-sman-surface rounded-2xl p-4 border border-slate-200/80 hover:shadow-md transition flex flex-col items-center text-center reveal-scale">
+              <div class="w-24 h-24 rounded-2xl overflow-hidden bg-sman-navy/10 border-2 border-sman-gold/50 mb-3">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1fyQCHNn4DOlDn5OIp4nJM4l-UJ6mhC2I&sz=w400"
+                  alt="Hanif Muhammad Albab"
+                  class="w-full h-full object-cover"
+                  onerror="this.replaceWith(createAvatarFallback('HM', 'Hanif Muhammad Albab'))"
+                />
+              </div>
+              <h4 class="font-bold text-sman-navy text-sm leading-snug">Hanif Muhammad Albab</h4>
+              <span class="mt-1.5 inline-block text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-sman-emerald text-white">
+                Gemini &amp; Insight Lead
+              </span>
+            </div>
+
+            <!-- 4 -->
+            <div class="bg-sman-surface rounded-2xl p-4 border border-slate-200/80 hover:shadow-md transition flex flex-col items-center text-center reveal-scale">
+              <div class="w-24 h-24 rounded-2xl overflow-hidden bg-sman-navy/10 border-2 border-sman-gold/50 mb-3">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1pXO4_wsL5m51xLCJWxuM980GhBt1_MnQ&sz=w400"
+                  alt="Stanislaus Marvel Londar"
+                  class="w-full h-full object-cover"
+                  onerror="this.replaceWith(createAvatarFallback('SM', 'Stanislaus Marvel Londar'))"
+                />
+              </div>
+              <h4 class="font-bold text-sman-navy text-sm leading-snug">Stanislaus Marvel Londar</h4>
+              <span class="mt-1.5 inline-block text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-amber-600 text-white">
+                Dashboard Lead
+              </span>
+            </div>
+
+            <!-- 5 -->
+            <div class="bg-sman-surface rounded-2xl p-4 border border-slate-200/80 hover:shadow-md transition flex flex-col items-center text-center reveal-scale">
+              <div class="w-24 h-24 rounded-2xl overflow-hidden bg-sman-navy/10 border-2 border-sman-gold/50 mb-3">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1QcNIuRMDzsd_Pla36lyQdBkOSD55qtxZ&sz=w400"
+                  alt="Muhammad Alfarrell Raziq"
+                  class="w-full h-full object-cover"
+                  onerror="this.replaceWith(createAvatarFallback('MA', 'Muhammad Alfarrell Raziq'))"
+                />
+              </div>
+              <h4 class="font-bold text-sman-navy text-sm leading-snug">Muhammad Alfarrell Raziq</h4>
+              <span class="mt-1.5 inline-block text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-white">
+                Presentation Lead
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guru Pembimbing (2 Pembina) -->
+        <div>
+          <h3 class="text-lg font-extrabold text-sman-navy mb-6 flex items-center gap-2 reveal">
+            <span class="w-2.5 h-6 rounded-full bg-sman-emerald"></span>
+            Guru Pembimbing
+          </h3>
+          <div class="grid md:grid-cols-2 gap-6 max-w-4xl">
+            <div class="bg-sman-surface rounded-2xl p-5 border border-slate-200/80 flex items-center gap-5 reveal-left">
+              <div class="w-20 h-20 rounded-2xl overflow-hidden bg-sman-navy/10 border-2 border-sman-navy/30 shrink-0">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1HCqRdWkZVdIneFiOjKi6sgOPpZi0eUCb&sz=w400"
+                  alt="Pak Giwanto"
+                  class="w-full h-full object-cover"
+                  onerror="this.replaceWith(createAvatarFallback('PG', 'Pak Giwanto'))"
+                />
               </div>
               <div>
-                <h4 class="font-display font-bold text-lg">SMANSA DataLab — G7KAIH</h4>
-                <p class="text-xs text-slate-400">Inisiatif Analitik Karakter Pelajar SMAN 1 Kota Depok</p>
+                <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-sman-emerald">Pembina 1</span>
+                <h4 class="text-lg font-extrabold text-sman-navy">Pak Giwanto</h4>
+                <p class="text-xs sm:text-sm text-sman-muted mt-0.5">Pendamping arah substansi pembiasaan, integritas data, dan pembinaan karakter murid SMAN 1 Kota Depok.</p>
               </div>
             </div>
-            <p class="mt-4 text-sm text-slate-400 leading-relaxed max-w-md">
-              Platform riset dan visualisasi data survei Gerakan 7 Kebiasaan Anak Indonesia Hebat (n = 658 responden valid: Kelas X = 257, Kelas XI = 205, Kelas XII = 196) untuk mendukung kebijakan pendidikan berbasis data di SMAN 1 Kota Depok.
+
+            <div class="bg-sman-surface rounded-2xl p-5 border border-slate-200/80 flex items-center gap-5 reveal-right">
+              <div class="w-20 h-20 rounded-2xl overflow-hidden bg-sman-navy/10 border-2 border-sman-navy/30 shrink-0">
+                <img
+                  src="https://drive.google.com/thumbnail?id=1I4EtTpQFeEw2WsJUwqthef_Q5p-XRi77&sz=w400"
+                  alt="Ibu Mersi Selano"
+                  class="w-full h-full object-cover"
+                  onerror="this.replaceWith(createAvatarFallback('IM', 'Ibu Mersi Selano'))"
+                />
+              </div>
+              <div>
+                <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-sman-blue">Guru Pembimbing</span>
+                <h4 class="text-lg font-extrabold text-sman-navy">Ibu Mersi Selano</h4>
+                <p class="text-xs sm:text-sm text-sman-muted mt-0.5">Pembimbing metodologi riset, koordinasi pelaksanaan survei, dan penguatan implementasi G7KAIH di sekolah.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUSI YANG DITAWARKAN -->
+    <section id="solusi-g7kaih" class="py-20 bg-sman-surface border-t border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="max-w-3xl reveal">
+          <span class="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 mb-3">
+            Rekomendasi Solusi Aplikatif
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-sman-navy">Solusi Nyata untuk Kedisiplinan, Belajar &amp; Kehidupan Sosial</h2>
+          <p class="text-sman-muted mt-2">Dirancang berdasarkan pola respons survei murid agar realistis diterapkan di lingkungan sekolah maupun rumah.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal-left">
+            <div class="w-10 h-10 rounded-xl bg-sman-navy text-sman-gold font-extrabold flex items-center justify-center mb-4">01</div>
+            <h3 class="font-extrabold text-sman-navy text-lg mb-2">Digital Sunset 21:30</h3>
+            <p class="text-sm text-sman-muted leading-relaxed">
+              Kesepakatan jeda gawai dan media sosial 45–60 menit sebelum jam tidur agar durasi tidur 7–8 jam tercapai dan bangun pagi lebih segar tanpa kelelahan.
             </p>
-            <div class="mt-5 flex items-center gap-2 text-xs text-slate-400">
-              <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-              <span>Jl. Nusantara Raya No. 317, Depok Jaya, Kec. Pancoran Mas, Kota Depok, Jawa Barat 16432</span>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal">
+            <div class="w-10 h-10 rounded-xl bg-sman-blue text-white font-extrabold flex items-center justify-center mb-4">02</div>
+            <h3 class="font-extrabold text-sman-navy text-lg mb-2">Pomodoro &amp; AI Terarah</h3>
+            <p class="text-sm text-sman-muted leading-relaxed">
+              Belajar mandiri terstruktur (25 menit fokus + 5 menit jeda) dengan memanfaatkan video edukasi, buku, dan AI secara etis untuk meringkas serta menguji pemahaman.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal">
+            <div class="w-10 h-10 rounded-xl bg-sman-emerald text-white font-extrabold flex items-center justify-center mb-4">03</div>
+            <h3 class="font-extrabold text-sman-navy text-lg mb-2">Morning Fuel &amp; Hidrasi</h3>
+            <p class="text-sm text-sman-muted leading-relaxed">
+              Membiasakan sarapan bergizi seimbang sebelum berangkat serta target minum air putih bertahap (250 mL/gelas) untuk menjaga stamina sepanjang KBM.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal-right">
+            <div class="w-10 h-10 rounded-xl bg-sman-gold text-sman-navy font-extrabold flex items-center justify-center mb-4">04</div>
+            <h3 class="font-extrabold text-sman-navy text-lg mb-2">Peer-Group Sosial &amp; Gerak</h3>
+            <p class="text-sm text-sman-muted leading-relaxed">
+              Mengintegrasikan kegiatan organisasi, gotong royong, dan olahraga ringan/sedang bersama teman sebaya agar kehidupan sosial tetap sehat dan saling mendukung.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOKUMENTASI KEGIATAN G7KAIH DI SEKOLAH -->
+    <section id="dokumentasi" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 reveal">
+          <div>
+            <span class="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sman-goldLight text-sman-navy mb-2">
+              Dokumentasi Sekolah
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-sman-navy">Potret Gerakan G7KAIH di SMAN 1 Kota Depok</h2>
+          </div>
+          <p class="text-sm text-sman-muted max-w-md">
+            Rangkaian kegiatan pembiasaan karakter, olahraga pagi, literasi, ibadah bersama, dan kepedulian lingkungan sekolah.
+          </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Foto 1: Senam Pagi / Berolahraga -->
+          <div class="group rounded-2xl overflow-hidden border border-slate-200 bg-sman-surface shadow-sm reveal-scale">
+            <div class="aspect-video overflow-hidden bg-slate-200">
+              <img
+                src="https://drive.google.com/thumbnail?id=18--Es5BjLnTk6mNk_LzwDnAnOduhgPyq&sz=w900"
+                alt="Aktivitas Fisik & Senam Pagi SMAN 1 Kota Depok"
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                onerror="this.src='https://drive.google.com/thumbnail?id=1dBl70dqlZQOQWx2Rn6dL8tK6YmHHDEOK&sz=w900'"
+              />
+            </div>
+            <div class="p-4">
+              <span class="text-[11px] font-mono font-bold text-sman-emerald uppercase">Kebiasaan Berolahraga</span>
+              <h4 class="font-bold text-sman-navy mt-0.5">Gerak Pagi &amp; Kebugaran Jasmani</h4>
+              <p class="text-xs text-sman-muted mt-1">Membangun energi fisik dan kebersamaan murid sebelum memulai aktivitas belajar.</p>
             </div>
           </div>
 
-          <!-- Quick Links -->
-          <div>
-            <h5 class="font-display font-bold text-white text-sm uppercase tracking-wider mb-4">Navigasi Cepat</h5>
-            <ul class="space-y-2.5 text-sm">
-              <li><a href="#tentang-tim" class="hover:text-white transition-colors">Profil Tim Peneliti</a></li>
-              <li><a href="#visi-misi" class="hover:text-white transition-colors">Visi & Misi Sekolah</a></li>
-              <li><a href="#permasalahan" class="hover:text-white transition-colors">Analisis Permasalahan</a></li>
-              <li><a href="#solusi-strategis" class="hover:text-white transition-colors">Solusi & Rekomendasi</a></li>
-              <li><button onclick="switchPage('dashboard')" class="text-blue-400 hover:text-blue-300 font-semibold transition-colors">Buka Dashboard Analitik →</button></li>
-            </ul>
+          <!-- Foto 2: Kebersihan & Lingkungan (Lembur Diurus / Kota Ditata) -->
+          <div class="group rounded-2xl overflow-hidden border border-slate-200 bg-sman-surface shadow-sm reveal-scale">
+            <div class="aspect-video overflow-hidden bg-slate-200">
+              <img
+                src="https://drive.google.com/thumbnail?id=11IMsA13Qyka4KS0qabVSJMrvHVv_ULhT&sz=w900"
+                alt="Kegiatan Kebersihan & Kepedulian Lingkungan SMAN 1 Kota Depok"
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                onerror="this.src='https://drive.google.com/thumbnail?id=1J20O-40HQYFqBe9GASRwgqBwgSPPCQRP&sz=w900'"
+              />
+            </div>
+            <div class="p-4">
+              <span class="text-[11px] font-mono font-bold text-sman-blue uppercase">Bermasyarakat &amp; Berbudaya Lingkungan</span>
+              <h4 class="font-bold text-sman-navy mt-0.5">Gotong Royong &amp; Lingkungan Asri</h4>
+              <p class="text-xs text-sman-muted mt-1">Menumbuhkan tanggung jawab sosial serta kepedulian terhadap lingkungan sekolah.</p>
+            </div>
           </div>
 
-          <!-- Survey Metadata -->
-          <div>
-            <h5 class="font-display font-bold text-white text-sm uppercase tracking-wider mb-4">Metodologi Survei</h5>
-            <ul class="space-y-2.5 text-xs text-slate-400">
-              <li class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <span>Total Sampel Valid</span>
-                <span class="text-white font-semibold">658 Siswa</span>
-              </li>
-              <li class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <span>Kelas X / XI / XII</span>
-                <span class="text-white font-semibold">257 / 205 / 196</span>
-              </li>
-              <li class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <span>Uji Statistik</span>
-                <span class="text-white font-semibold">Chi-Square & K-Means</span>
-              </li>
-              <li class="flex items-center justify-between">
-                <span>Lingkungan Komputasi</span>
-                <span class="text-emerald-400 font-semibold">Python • Google Colab</span>
-              </li>
-            </ul>
+          <!-- Foto 3: Pembiasaan Karakter & Kebersamaan Sekolah -->
+          <div class="group rounded-2xl overflow-hidden border border-slate-200 bg-sman-surface shadow-sm reveal-scale">
+            <div class="aspect-video overflow-hidden bg-slate-200">
+              <img
+                src="https://drive.google.com/thumbnail?id=170BbTNKcglIyFuBKSEnRcaq2R8SqdlDy&sz=w900"
+                alt="Kegiatan Kebersamaan & Karakter Murid SMAN 1 Kota Depok"
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                onerror="this.src='https://drive.google.com/thumbnail?id=1F20chHve1L2sbb7IN_xNOfvxDc1gENEf&sz=w900'"
+              />
+            </div>
+            <div class="p-4">
+              <span class="text-[11px] font-mono font-bold text-amber-700 uppercase">Karakter &amp; Kedisiplinan</span>
+              <h4 class="font-bold text-sman-navy mt-0.5">Pembiasaan Rutin &amp; Kolaborasi Murid</h4>
+              <p class="text-xs text-sman-muted mt-1">Memperkuat kepemimpinan, kedisiplinan, dan iklim positif di lingkungan sekolah.</p>
+            </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© 2026 Tim Riset SMANSA DataLab — SMAN 1 Kota Depok. Hak Cipta Dilindungi.</p>
-          <p>Dikembangkan untuk Penguatan Implementasi Gerakan 7 Kebiasaan Anak Indonesia Hebat (G7KAIH).</p>
+    <!-- FOOTER LANDING PAGE -->
+    <footer class="bg-sman-navy text-slate-200 pt-14 pb-10 border-t-4 border-sman-gold">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8 pb-10 border-b border-white/15">
+          <div class="space-y-2">
+            <h3 class="text-lg font-extrabold text-white">G7KAIH Analytics • SMAN 1 Kota Depok</h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Jl. Nusantara Raya No. 317, Kota Depok, Jawa Barat 16432. Kajian empiris kebiasaan 7 KAIH berbasis data survei murid (N = 658).
+            </p>
+          </div>
+          <div class="space-y-1.5 text-xs sm:text-sm">
+            <div class="font-bold text-sman-gold uppercase tracking-wider text-xs">Tim &amp; Pembina</div>
+            <p>Peneliti: Azzam, Rafisqy, Hanif, Marvel, Alfarrell</p>
+            <p>Pembimbing: Pak Giwanto &amp; Ibu Mersi Selano</p>
+          </div>
+          <div class="space-y-2 text-xs sm:text-sm">
+            <div class="font-bold text-sman-gold uppercase tracking-wider text-xs">Navigasi Cepat</div>
+            <div class="flex flex-wrap gap-3 pt-1">
+              <button onclick="switchPage('landing')" class="underline hover:text-sman-gold cursor-pointer">Landing Page</button>
+              <button onclick="switchPage('dashboard')" class="underline hover:text-sman-gold cursor-pointer">Buka Dashboard</button>
+            </div>
+          </div>
+        </div>
+        <div class="pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-400 gap-2">
+          <span>© 2026 Tim Riset G7KAIH SMAN 1 Kota Depok. Seluruh hak cipta dilindungi.</span>
+          <span>Karakter Pancawaluya • Jawa Barat Istimewa</span>
         </div>
       </div>
     </footer>
@@ -795,1089 +737,993 @@
   <!-- ===================================================================== -->
   <section id="page-dashboard" class="hidden">
 
-    <!-- PART A: 100% FULL VIEWPORT FLOATING TRANSPARENT CHAT BUBBLE INSIGHTS -->
-    <div id="floating-insights-stage" class="relative w-full min-h-screen lg:h-screen pt-16 overflow-hidden bg-gradient-to-br from-[#070D19] via-[#0F172A] to-[#0A192F] text-white flex flex-col justify-between">
-      
-      <!-- Ambient Background Glow Orbs & Grid -->
-      <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#38BDF8 1px, transparent 1px); background-size: 32px 32px;"></div>
-      <div class="ambient-orb absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-royal-600/25 blur-[110px] pointer-events-none"></div>
-      <div class="ambient-orb absolute bottom-1/4 right-1/4 w-[28rem] h-[28rem] rounded-full bg-emerald-600/20 blur-[120px] pointer-events-none" style="animation-delay: 3s;"></div>
-      <div class="ambient-orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-amber-500/10 blur-[100px] pointer-events-none" style="animation-delay: 5s;"></div>
-
-      <!-- Top Header inside 100vh Stage -->
-      <div class="relative z-20 text-center px-4 pt-5 sm:pt-7 pointer-events-none">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] sm:text-xs font-semibold tracking-wide text-blue-200 backdrop-blur-md">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-          <span>LIVE INSIGHT STREAM • SURVEI G7KAIH SMAN 1 KOTA DEPOK (N = 658)</span>
+    <!-- 100% FULL VIEWPORT FLOATING TRANSPARENT BUBBLE CHAT INSIGHTS -->
+    <div id="bubble-hero-stage" class="bubble-stage flex flex-col justify-between p-4 sm:p-8 lg:p-10">
+      <!-- Top Bar Inside 100% Full-Screen Bubble Stage -->
+      <div class="relative z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/12 border border-white/25 text-sman-goldLight text-xs font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            100% FULL VIEWPORT • FLOATING INSIGHT BUBBLES (N = 658)
+          </span>
+          <h1 class="text-xl sm:text-3xl font-extrabold text-white mt-2">
+            Insight Utama Survei 7 Kebiasaan Anak Indonesia Hebat
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-300">
+            Klik salah satu bubble chat transparan yang mengambang untuk membaca detail temuan, atau scroll ke bawah untuk melihat chart &amp; analisis lengkap.
+          </p>
         </div>
-        <h1 class="mt-2.5 font-display text-2xl sm:text-4xl font-extrabold tracking-tight text-white drop-shadow-sm">
-          Temuan Kunci & Anomali Perilaku Pelajar
-        </h1>
-        <p class="mt-1 text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
-          Klik pada gelembung pesan transparan di bawah untuk membedah bukti statistik, atau scroll ke bawah untuk melihat grafik interaktif & metode Python.
-        </p>
-      </div>
-
-      <!-- Floating Chat Bubbles Field (Responsive: Absolute Floating on Desktop, Grid/Floating on Mobile) -->
-      <div class="relative z-20 flex-1 w-full max-w-[1440px] mx-auto px-4 py-4 lg:py-0">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 lg:block lg:h-full lg:relative">
-
-          <!-- BUBBLE 1: Paradoks Tidur -->
-          <div onclick="openInsightModal(0)" class="chat-bubble bubble-tail-left animate-float-1 cursor-pointer rounded-2xl p-3.5 sm:p-4 lg:absolute lg:top-[3%] lg:left-[2%] lg:w-[29%]">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-rose-300">
-                <i data-lucide="moon" class="w-3.5 h-3.5"></i> Paradoks Tidur
-              </span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/25 text-rose-200 border border-rose-400/30">66,4% ≤ 6 Jam</span>
-            </div>
-            <p class="text-xs sm:text-[13px] text-slate-100 leading-relaxed">
-              <strong class="text-white">66,4% siswa tidur ≤ 6 jam</strong> (56,1% hanya 5–6 jam & 10,3% &lt; 5 jam), meski <strong class="text-teal-300">72,8% berhasil bangun sebelum pukul 05.00!</strong>
-            </p>
-          </div>
-
-          <!-- BUBBLE 2: Hambatan Utama -->
-          <div onclick="openInsightModal(1)" class="chat-bubble bubble-tail-right animate-float-2 cursor-pointer rounded-2xl p-3.5 sm:p-4 lg:absolute lg:top-[2%] lg:right-[2%] lg:w-[29%]">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-300">
-                <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Hambatan Utama
-              </span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/25 text-amber-200 border border-amber-400/30">82,8% Responden</span>
-            </div>
-            <p class="text-xs sm:text-[13px] text-slate-100 leading-relaxed">
-              <strong class="text-white">82,8% (545 dari 658 siswa)</strong> menyebut jadwal &amp; tugas padat sebagai hambatan utama, diikuti distraksi ponsel &amp; medsos <strong class="text-amber-300">(59,4%)</strong>.
-            </p>
-          </div>
-
-          <!-- BUBBLE 3: Korelasi Kelas vs Sarapan -->
-          <div onclick="openInsightModal(2)" class="chat-bubble bubble-tail-left animate-float-3 cursor-pointer rounded-2xl p-3.5 sm:p-4 lg:absolute lg:top-[34%] lg:left-[35%] lg:w-[30%]">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-blue-300">
-                <i data-lucide="trending-down" class="w-3.5 h-3.5"></i> Korelasi Kelas vs Sarapan
-              </span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/25 text-blue-200 border border-blue-400/30">p = 0.00014</span>
-            </div>
-            <p class="text-xs sm:text-[13px] text-slate-100 leading-relaxed">
-              Kebiasaan selalu sarapan turun drastis seiring naiknya jenjang: dari <strong class="text-emerald-300">45,9% di Kelas 10</strong> menjadi hanya <strong class="text-rose-300">28,1% di Kelas 12!</strong>
-            </p>
-          </div>
-
-          <!-- BUBBLE 4: Sumber Belajar Era AI -->
-          <div onclick="openInsightModal(3)" class="chat-bubble bubble-tail-left animate-float-4 cursor-pointer rounded-2xl p-3.5 sm:p-4 lg:absolute lg:top-[36%] lg:left-[1.5%] lg:w-[29%]">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-purple-300">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Sumber Belajar Era AI
-              </span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/25 text-purple-200 border border-purple-400/30">34,5% Pakai AI</span>
-            </div>
-            <p class="text-xs sm:text-[13px] text-slate-100 leading-relaxed">
-              <strong class="text-white">41,9% siswa</strong> memilih Video Edukasi &amp; <strong class="text-purple-300">34,5% mengandalkan Artificial Intelligence (AI)</strong> sebagai sumber belajar utama, melampaui Buku (16,7%).
-            </p>
-          </div>
-
-          <!-- BUBBLE 5: Pilar Terkuat vs Terlemah -->
-          <div onclick="openInsightModal(4)" class="chat-bubble bubble-tail-right animate-float-1 cursor-pointer rounded-2xl p-3.5 sm:p-4 lg:absolute lg:top-[36%] lg:right-[1.5%] lg:w-[29%]">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-300">
-                <i data-lucide="award" class="w-3.5 h-3.5"></i> Pilar Terkuat vs Terlemah
-              </span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/25 text-emerald-200 border border-emerald-400/30">7 Kebiasaan</span>
-            </div>
-            <p class="text-xs sm:text-[13px] text-slate-100 leading-relaxed">
-              <strong class="text-emerald-300">Beribadah (31,5%) &amp; Bangun Pagi (24,3%)</strong> adalah kebiasaan terkuat, sedangkan <strong class="text-rose-300">Tidur Cepat &amp; Bermasyarakat (3,6%)</strong> paling jarang dilakukan.
-            </p>
-          </div>
-
-          <!-- BUBBLE 6: Korelasi Tidur & Sarapan -->
-          <div onclick="openInsightModal(5)" class="chat-bubble bubble-tail-left animate-float-2 cursor-pointer rounded-2xl p-3.5 sm:p-4 lg:absolute lg:bottom-[4%] lg:left-[10%] lg:w-[34%]">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-cyan-300">
-                <i data-lucide="link" class="w-3.5 h-3.5"></i> Korelasi Tidur &amp; Sarapan
-              </span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/25 text-cyan-200 border border-cyan-400/30">p = 0.008</span>
-            </div>
-            <p class="text-xs sm:text-[13px] text-slate-100 leading-relaxed">
-              Siswa yang tidur &lt; 5 jam memiliki tingkat <strong class="text-rose-300">'Tidak Pernah Sarapan' tertinggi (14,7%)</strong>, memicu risiko kelelahan ganda di sekolah.
-            </p>
-          </div>
-
-          <!-- BUBBLE 7: Awareness Tinggi -->
-          <div onclick="openInsightModal(6)" class="chat-bubble bubble-tail-right animate-float-3 cursor-pointer rounded-2xl p-3.5 sm:p-4 lg:absolute lg:bottom-[4%] lg:right-[10%] lg:w-[34%]">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-300">
-                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Awareness Tinggi
-              </span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/25 text-teal-200 border border-teal-400/30">86,3% Paham</span>
-            </div>
-            <p class="text-xs sm:text-[13px] text-slate-100 leading-relaxed">
-              <strong class="text-white">86,3% siswa SMAN 1 Depok</strong> sudah memahami G7KAIH dengan baik, membuktikan masalahnya ada pada <strong class="text-amber-300">eksekusi &amp; manajemen waktu</strong>, bukan sosialisasi.
-            </p>
-          </div>
-
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="switchPage('landing')" class="px-3.5 py-2 rounded-xl bg-white/12 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 transition cursor-pointer">
+            ← Landing Page
+          </button>
+          <a href="#dashboard-analytics-body" class="px-4 py-2 rounded-xl bg-sman-gold hover:bg-amber-400 text-sman-navy text-xs font-extrabold transition">
+            Scroll ke Chart &amp; Analisis ↓
+          </a>
         </div>
       </div>
 
-      <!-- Bottom Scroll Trigger CTA -->
-      <div class="relative z-20 pb-5 pt-2 text-center">
-        <a href="#analytics-charts" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-royal-600 border border-white/20 text-xs sm:text-sm font-semibold text-white backdrop-blur-md transition-all shadow-lg group">
-          <span>Scroll untuk Eksplorasi Chart &amp; Metode</span>
-          <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform"></i>
+      <!-- Floating Transparent Chat Bubbles Container -->
+      <div class="relative z-10 flex-1 my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-center">
+        <!-- Bubble 1 -->
+        <div onclick="openBubbleModal(0)" class="glass-bubble rounded-3xl p-5 text-white cursor-pointer animate-float-slow lg:translate-y-2">
+          <div class="flex items-center justify-between text-[11px] font-mono text-sman-goldLight mb-2">
+            <span>💬 INSIGHT #01 • TIDUR MALAM</span>
+            <span>56,1% (369/658)</span>
+          </div>
+          <p class="text-sm sm:text-base font-bold leading-snug">
+            “Mayoritas murid tidur 5–6 jam per malam sebelum hari sekolah, meski banyak yang tetap bangun pagi tepat waktu.”
+          </p>
+          <span class="inline-block mt-3 text-[11px] text-sky-200 underline">Klik detail &amp; implikasi →</span>
+        </div>
+
+        <!-- Bubble 2 -->
+        <div onclick="openBubbleModal(1)" class="glass-bubble rounded-3xl p-5 text-white cursor-pointer animate-float-med lg:-translate-y-4">
+          <div class="flex items-center justify-between text-[11px] font-mono text-emerald-300 mb-2">
+            <span>💬 INSIGHT #02 • LITERASI G7KAIH</span>
+            <span>86,3% (568/658)</span>
+          </div>
+          <p class="text-sm sm:text-base font-bold leading-snug">
+            “568 dari 658 murid sudah mengetahui dan memahami G7KAIH dengan baik—tantangan utamanya ada pada konsistensi harian.”
+          </p>
+          <span class="inline-block mt-3 text-[11px] text-emerald-200 underline">Klik detail &amp; implikasi →</span>
+        </div>
+
+        <!-- Bubble 3 -->
+        <div onclick="openBubbleModal(2)" class="glass-bubble rounded-3xl p-5 text-white cursor-pointer animate-float-fast lg:translate-y-3">
+          <div class="flex items-center justify-between text-[11px] font-mono text-amber-200 mb-2">
+            <span>💬 INSIGHT #03 • HAMBATAN UTAMA</span>
+            <span>545 &amp; 391 SEBUTAN</span>
+          </div>
+          <p class="text-sm sm:text-base font-bold leading-snug">
+            “Jadwal/tugas padat, penggunaan gawai &amp; media sosial, serta kesulitan mengatur waktu menjadi penghambat paling dominan.”
+          </p>
+          <span class="inline-block mt-3 text-[11px] text-amber-200 underline">Klik detail &amp; implikasi →</span>
+        </div>
+
+        <!-- Bubble 4 -->
+        <div onclick="openBubbleModal(3)" class="glass-bubble rounded-3xl p-5 text-white cursor-pointer animate-float-med lg:-translate-y-2">
+          <div class="flex items-center justify-between text-[11px] font-mono text-sky-200 mb-2">
+            <span>💬 INSIGHT #04 • KEBIASAAN TERKUAT</span>
+            <span>BERIBADAH &amp; BANGUN PAGI</span>
+          </div>
+          <p class="text-sm sm:text-base font-bold leading-snug">
+            “Beribadah (207 murid) dan Bangun pagi (160 murid) memimpin sebagai kebiasaan G7KAIH yang paling sering dilakukan.”
+          </p>
+          <span class="inline-block mt-3 text-[11px] text-sky-200 underline">Klik detail &amp; implikasi →</span>
+        </div>
+
+        <!-- Bubble 5 -->
+        <div onclick="openBubbleModal(4)" class="glass-bubble rounded-3xl p-5 text-white cursor-pointer animate-float-slow lg:translate-y-4">
+          <div class="flex items-center justify-between text-[11px] font-mono text-teal-200 mb-2">
+            <span>💬 INSIGHT #05 • BELAJAR &amp; REFLEKSI</span>
+            <span>SPEARMAN ρ = 0,3688</span>
+          </div>
+          <p class="text-sm sm:text-base font-bold leading-snug">
+            “Frekuensi belajar mandiri berkorelasi positif paling kuat dengan frekuensi refleksi/berdoa di luar ibadah wajib (p &lt; 0,001).”
+          </p>
+          <span class="inline-block mt-3 text-[11px] text-teal-200 underline">Klik detail &amp; implikasi →</span>
+        </div>
+
+        <!-- Bubble 6 -->
+        <div onclick="openBubbleModal(5)" class="glass-bubble rounded-3xl p-5 text-white cursor-pointer animate-float-fast lg:-translate-y-3">
+          <div class="flex items-center justify-between text-[11px] font-mono text-sman-goldLight mb-2">
+            <span>💬 INSIGHT #06 • POLA ANTAR KELAS</span>
+            <span>KRUSKAL-WALLIS SARAPAN</span>
+          </div>
+          <p class="text-sm sm:text-base font-bold leading-snug">
+            “Konsistensi sarapan berbeda signifikan antar tingkat kelas X, XI, dan XII (H = 12,97; p = 0,0015), menuntut pendekatan bertahap.”
+          </p>
+          <span class="inline-block mt-3 text-[11px] text-sman-goldLight underline">Klik detail &amp; implikasi →</span>
+        </div>
+      </div>
+
+      <!-- Bottom Scroll Prompt Inside Full Viewport -->
+      <div class="relative z-20 flex items-center justify-center">
+        <a href="#dashboard-analytics-body" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 text-xs font-mono text-white transition">
+          <span>Gulir ke bawah untuk Chart, Hasil Analisis &amp; Metode Python</span>
+          <span>↓</span>
         </a>
       </div>
     </div>
 
-    <!-- =================================================================== -->
-    <!-- PART B: INTERACTIVE CHARTS, CORRELATIONS & PYTHON METHODOLOGY       -->
-    <!-- =================================================================== -->
-    <div id="analytics-charts" class="bg-slate-50 py-16 lg:py-24">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- MODAL DETAIL BUBBLE -->
+    <div id="bubble-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm items-center justify-center p-4" onclick="closeBubbleModal(event)">
+      <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between mb-3">
+          <span id="modal-tag" class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-sman-navy/10 text-sman-navy">INSIGHT</span>
+          <button onclick="closeBubbleModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2 cursor-pointer">✕</button>
+        </div>
+        <h3 id="modal-title" class="text-xl font-extrabold text-sman-navy mb-2"></h3>
+        <p id="modal-body" class="text-sm text-sman-muted leading-relaxed mb-4"></p>
+        <div class="p-4 rounded-2xl bg-sman-surface border border-slate-200/80">
+          <div class="text-xs font-mono font-bold text-sman-blue uppercase mb-1">Rekomendasi Tindak Lanjut</div>
+          <p id="modal-action" class="text-xs sm:text-sm text-sman-ink font-medium"></p>
+        </div>
+      </div>
+    </div>
 
-        <!-- Interactive Class Filter Bar -->
-        <div class="reveal reveal-up bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-sm mb-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <!-- SCROLLABLE ANALYTICS BODY: CHARTS, ANALYSIS RESULTS, 6 ALGORITHMS & COLAB PYTHON -->
+    <div id="dashboard-analytics-body" class="py-16 bg-sman-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+
+        <!-- Filter & Summary Strip -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4 reveal">
           <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-royal-600">Filter Segmentasi Responden</span>
-            <h2 class="font-display text-xl sm:text-2xl font-extrabold text-navy-900 mt-0.5">
-              Eksplorasi Data Survei Berdasarkan Jenjang Kelas
-            </h2>
+            <span class="text-xs font-mono font-bold text-sman-blue uppercase">Eksplorasi Data Interaktif</span>
+            <h2 class="text-2xl font-extrabold text-sman-navy">Visualisasi &amp; Hasil Analisis Survei G7KAIH</h2>
+            <p class="text-xs sm:text-sm text-sman-muted">Filter grafik distribusi berdasarkan tingkat kelas untuk membandingkan pola murid.</p>
           </div>
-
-          <div class="flex flex-wrap gap-2" id="grade-filter-buttons">
-            <button onclick="updateDashboardFilter('all')" data-grade="all" class="grade-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-navy-900 text-white shadow-md">
-              Semua Kelas (n=658)
+          <div class="flex flex-wrap items-center gap-2" id="class-filter-group">
+            <button onclick="setClassFilter('ALL')" data-filter="ALL" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-sman-navy text-white cursor-pointer">
+              Semua Kelas (658)
             </button>
-            <button onclick="updateDashboardFilter('10')" data-grade="10" class="grade-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
-              Kelas 10 (n=257)
+            <button onclick="setClassFilter('10')" data-filter="10" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-sman-navy hover:bg-slate-200 cursor-pointer">
+              Kelas 10 (257)
             </button>
-            <button onclick="updateDashboardFilter('11')" data-grade="11" class="grade-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
-              Kelas 11 (n=205)
+            <button onclick="setClassFilter('11')" data-filter="11" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-sman-navy hover:bg-slate-200 cursor-pointer">
+              Kelas 11 (205)
             </button>
-            <button onclick="updateDashboardFilter('12')" data-grade="12" class="grade-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
-              Kelas 12 (n=196)
+            <button onclick="setClassFilter('12')" data-filter="12" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-sman-navy hover:bg-slate-200 cursor-pointer">
+              Kelas 12 (196)
             </button>
           </div>
         </div>
 
-        <!-- 4 KPI SUMMARY CARDS -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
-          <!-- KPI 1 -->
-          <div class="reveal reveal-left delay-100 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500">Total Sampel Terfilter</span>
-              <div class="w-9 h-9 rounded-lg bg-royal-50 text-royal-600 flex items-center justify-center">
-                <i data-lucide="users" class="w-4 h-4"></i>
+        <!-- CHARTS GRID (4 Interactive Charts) -->
+        <div class="grid lg:grid-cols-2 gap-7">
+          <!-- Chart 1: Durasi Tidur Malam -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm reveal-left">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-extrabold text-sman-navy text-base sm:text-lg">1. Durasi Tidur Malam Sebelum Hari Sekolah</h3>
+                <p class="text-xs text-sman-muted">Sebaran durasi istirahat malam hari aktif</p>
               </div>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-blue-50 text-sman-blue font-semibold">EDA • Bar Chart</span>
             </div>
-            <p id="kpi-respondents" class="mt-3 font-display text-3xl font-extrabold text-navy-900">658</p>
-            <p id="kpi-respondents-sub" class="mt-1 text-xs text-emerald-600 font-medium">100% Populasi Survei SMAN 1 Depok</p>
+            <div class="h-64">
+              <canvas id="chartSleepDur"></canvas>
+            </div>
           </div>
 
-          <!-- KPI 2 -->
-          <div class="reveal reveal-up delay-200 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500">Tidur Kurang (≤ 6 Jam)</span>
-              <div class="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
-                <i data-lucide="moon" class="w-4 h-4"></i>
+          <!-- Chart 2: Frekuensi Sarapan -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm reveal-right">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-extrabold text-sman-navy text-base sm:text-lg">2. Frekuensi Sarapan Sebelum Aktivitas Pagi</h3>
+                <p class="text-xs text-sman-muted">Konsistensi sarapan dalam 7 hari terakhir</p>
               </div>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 font-semibold">Kruskal-Wallis p=0.0015</span>
             </div>
-            <p id="kpi-sleep" class="mt-3 font-display text-3xl font-extrabold text-rose-600">66,4%</p>
-            <p id="kpi-sleep-sub" class="mt-1 text-xs text-slate-500">Mayoritas tidur 5–6 jam/malam</p>
+            <div class="h-64">
+              <canvas id="chartBreakfast"></canvas>
+            </div>
           </div>
 
-          <!-- KPI 3 -->
-          <div class="reveal reveal-up delay-300 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500">Selalu Sarapan Pagi</span>
-              <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <i data-lucide="coffee" class="w-4 h-4"></i>
+          <!-- Chart 3: Frekuensi Belajar Mandiri -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm reveal-left">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-extrabold text-sman-navy text-base sm:text-lg">3. Frekuensi Belajar Mandiri di Luar Sekolah</h3>
+                <p class="text-xs text-sman-muted">Kegiatan belajar mandiri di luar jam wajib</p>
               </div>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 font-semibold">Spearman ρ=0.3688</span>
             </div>
-            <p id="kpi-breakfast" class="mt-3 font-display text-3xl font-extrabold text-emerald-600">37,8%</p>
-            <p id="kpi-breakfast-sub" class="mt-1 text-xs text-slate-500">Turun signifikan di jenjang Kelas 12</p>
+            <div class="h-64">
+              <canvas id="chartStudyFreq"></canvas>
+            </div>
           </div>
 
-          <!-- KPI 4 -->
-          <div class="reveal reveal-right delay-400 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500">Belajar dengan Video &amp; AI</span>
-              <div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+          <!-- Chart 4: Kebiasaan Paling Sering Dilakukan -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm reveal-right">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-extrabold text-sman-navy text-base sm:text-lg">4. Poin G7KAIH Paling Sering Dilakukan</h3>
+                <p class="text-xs text-sman-muted">Pilihan kebiasaan terkuat menurut responden</p>
               </div>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-slate-100 text-sman-navy font-semibold">Top Habit</span>
             </div>
-            <p id="kpi-digital-learn" class="mt-3 font-display text-3xl font-extrabold text-royal-600">76,4%</p>
-            <p id="kpi-digital-learn-sub" class="mt-1 text-xs text-slate-500">41,9% Video Edukasi + 34,5% AI</p>
+            <div class="h-64">
+              <canvas id="chartTopHabit"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 5: Waktu Mulai Tidur Malam -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm reveal-left">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-extrabold text-sman-navy text-base sm:text-lg">5. Pukul Mulai Tidur Malam Sebelum Hari Sekolah</h3>
+                <p class="text-xs text-sman-muted">Distribusi jam mulai beristirahat malam hari aktif</p>
+              </div>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-800 font-semibold">EDA • Jam Tidur</span>
+            </div>
+            <div class="h-64">
+              <canvas id="chartSleepStart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 6: Aktivitas Fisik / Olahraga Mandiri Harian -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm reveal-right">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-extrabold text-sman-navy text-base sm:text-lg">6. Durasi Olahraga / Aktivitas Fisik Mandiri Harian</h3>
+                <p class="text-xs text-sman-muted">Akumulasi waktu gerak fisik mandiri per hari</p>
+              </div>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 font-semibold">EDA • Fisik</span>
+            </div>
+            <div class="h-64">
+              <canvas id="chartExercise"></canvas>
+            </div>
           </div>
         </div>
 
-        <!-- CHARTS GRID (5 INTERACTIVE CHARTS) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
-          
-          <!-- Chart 1: Distribusi 7 Kebiasaan (7 cols) -->
-          <div class="reveal reveal-left lg:col-span-7 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-            <div class="flex items-start justify-between gap-4 mb-4">
-              <div>
-                <span class="text-[11px] font-bold uppercase tracking-wider text-royal-600">Chart 01 • Prioritas Kebiasaan</span>
-                <h3 class="font-display text-lg font-bold text-navy-900">Distribusi 7 Kebiasaan Paling Sering Dilakukan Siswa</h3>
-              </div>
-              <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-semibold">Persentase (%)</span>
+        <!-- SOROTAN UJI ASOSIASI KATEGORIAL (CHI-SQUARE HIGHLIGHTS) -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm reveal-left">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-bold text-sman-blue uppercase">Uji Chi-Square • Tingkat Kelas vs Sarapan</span>
+              <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">p = 0,00014 (Signifikan)</span>
             </div>
-            <div class="relative h-72 w-full">
-              <canvas id="chartHabits"></canvas>
-            </div>
+            <h4 class="text-lg font-extrabold text-sman-navy mb-2">Konsistensi Sarapan Berbeda Antar Jenjang Kelas</h4>
+            <p class="text-xs sm:text-sm text-sman-muted leading-relaxed">
+              Hasil uji asosiasi kategori (χ² = 30,95; p = 0,00014) menunjukkan pola sarapan tidak merata di seluruh kelas—kelas 10 mencatat proporsi sarapan rutin yang lebih tinggi dibanding kelas 11 dan 12 yang menghadapi padatnya tugas serta aktivitas tambahan.
+            </p>
           </div>
-
-          <!-- Chart 2: Paradoks Tidur Malam (5 cols) -->
-          <div class="reveal reveal-right lg:col-span-5 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-            <div class="flex items-start justify-between gap-4 mb-4">
-              <div>
-                <span class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Chart 02 • Paradoks Istirahat</span>
-                <h3 class="font-display text-lg font-bold text-navy-900">Proporsi Durasi Tidur Malam Siswa</h3>
-              </div>
-              <span class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 text-xs font-semibold">Sleep Deficit</span>
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm reveal-right">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-bold text-amber-700 uppercase">Uji Chi-Square • Durasi Tidur vs Sarapan</span>
+              <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">p = 0,00807 (Signifikan)</span>
             </div>
-            <div class="relative h-72 w-full flex items-center justify-center">
-              <canvas id="chartSleep"></canvas>
-            </div>
+            <h4 class="text-lg font-extrabold text-sman-navy mb-2">Kurang Tidur Malam Berkaitan dengan Kesiapan Pagi</h4>
+            <p class="text-xs sm:text-sm text-sman-muted leading-relaxed">
+              Uji asosiasi (χ² = 26,87; p = 0,00807) memperlihatkan bahwa durasi tidur malam berhubungan bermakna dengan frekuensi sarapan pagi—tidur yang terlalu larut membuat persiapan pagi menjadi terburu-buru.
+            </p>
           </div>
-
-          <!-- Chart 3: Tren Penurunan Sarapan & Tidur per Kelas (6 cols) -->
-          <div class="reveal reveal-left lg:col-span-6 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-            <div class="flex items-start justify-between gap-4 mb-4">
-              <div>
-                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Chart 03 • Komparasi Lintas Angkatan</span>
-                <h3 class="font-display text-lg font-bold text-navy-900">Tren Sarapan Rutin vs. Tidur &lt; 6 Jam per Kelas</h3>
-              </div>
-              <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-xs font-semibold">p = 0.00014</span>
-            </div>
-            <div class="relative h-72 w-full">
-              <canvas id="chartGradeTrend"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart 4: Peta Hambatan Terbesar (6 cols) -->
-          <div class="reveal reveal-right lg:col-span-6 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
-            <div class="flex items-start justify-between gap-4 mb-4">
-              <div>
-                <span class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Chart 04 • Multi-Label Bottlenecks</span>
-                <h3 class="font-display text-lg font-bold text-navy-900">Peta Hambatan Terbesar Penerapan G7KAIH</h3>
-              </div>
-              <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 text-xs font-semibold">Top Obstacles</span>
-            </div>
-            <div class="relative h-72 w-full">
-              <canvas id="chartObstacles"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart 5: Transformasi Sumber Belajar Mandiri (12 cols split) -->
-          <div class="reveal reveal-up lg:col-span-12 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/90 shadow-sm">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div class="lg:col-span-5">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-purple-600">Chart 05 • Transformasi Digital Belajar</span>
-                <h3 class="mt-1 font-display text-xl font-bold text-navy-900">Preferensi Sumber Belajar Mandiri Siswa SMAN 1 Depok</h3>
-                <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-                  Terjadi pergeseran fundamental dalam cara siswa SMA belajar mandiri di luar jam sekolah. <strong>Video Edukasi (41,9%)</strong> dan <strong>Artificial Intelligence (34,5%)</strong> mendominasi hingga tiga perempat populasi, jauh melampaui buku cetak konvensional (16,7%).
-                </p>
-                <div class="mt-5 p-4 rounded-xl bg-purple-50 border border-purple-200/70 text-xs text-purple-900 leading-relaxed">
-                  <strong>Implikasi Kebijakan:</strong> Sekolah perlu mengintegrasikan literasi <em>AI Prompting</em> yang etis agar siswa menggunakan AI untuk memahami konsep, bukan sekadar menyalin jawaban tugas.
-                </div>
-              </div>
-              <div class="lg:col-span-7 relative h-72 w-full">
-                <canvas id="chartLearningSources"></canvas>
-              </div>
-            </div>
-          </div>
-
         </div>
 
-        <!-- =============================================================== -->
-        <!-- SECTION: HASIL ANALISIS KORELASI STATISTIK (CHI-SQUARE)         -->
-        <!-- =============================================================== -->
-        <div id="statistical-correlations" class="mb-20">
-          <div class="max-w-3xl reveal reveal-up mb-10">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-royal-50 text-royal-600 border border-royal-600/20">
-              <i data-lucide="sigma" class="w-3.5 h-3.5"></i> Validasi Hipotesis Statistik
-            </span>
-            <h2 class="mt-3 font-display text-2xl sm:text-3xl font-extrabold text-navy-900">
-              Hasil Analisis Korelasi Statistik (Uji Chi-Square &amp; Cross-Tabulation)
-            </h2>
-            <p class="mt-2 text-slate-600 text-sm sm:text-base">
-              Pengujian independensi antar variabel kategori membuktikan hubungan sebab-akibat yang signifikan secara ilmiah (α = 0.05).
+        <!-- RINGKASAN KORELASI & ANALISIS DATA -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6 reveal">
+          <div>
+            <span class="text-xs font-mono font-bold text-sman-emerald uppercase">Temuan Korelasi &amp; Hubungan Antarvariabel</span>
+            <h3 class="text-2xl font-extrabold text-sman-navy mt-1">Ringkasan Hasil Analisis Statistik pada Dataset (N = 658)</h3>
+            <p class="text-xs sm:text-sm text-sman-muted mt-1">
+              Sesuai kaidah data ordinal/kategorikal, analisis korelasi menggunakan <strong>Spearman's ρ</strong> dan <strong>Kendall's τ</strong> (bukan Pearson mentah pada kategori ordinal), serta uji <strong>Kruskal–Wallis</strong> antar tingkat kelas.
             </p>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Correlation Card 1 -->
-            <div class="reveal reveal-left delay-100 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between gap-2 pb-4 border-b border-slate-100">
-                  <span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-mono text-xs font-bold">χ² = 27.42 | p = 0.00014</span>
-                  <span class="text-[11px] font-bold text-emerald-600 uppercase">Sangat Signifikan</span>
-                </div>
-                <h3 class="mt-4 font-display text-lg font-bold text-navy-900">
-                  1. Tingkat Kelas vs. Konsistensi Sarapan Pagi
-                </h3>
-                <p class="mt-2.5 text-sm text-slate-600 leading-relaxed">
-                  <strong>Interpretasi Psikososial:</strong> Semakin tinggi jenjang kelas, semakin tinggi tekanan persiapan UTBK/SNBT dan les tambahan malam hari. Siswa Kelas 12 cenderung tidur lebih larut dan bangun terburu-buru sehingga mengorbankan sarapan (turun dari 45,9% ke 28,1%).
-                </p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr class="border-b border-slate-200 text-sman-navy font-mono text-xs bg-sman-surface">
+                  <th class="py-3 px-4 rounded-tl-xl">Pasangan Variabel / Perbandingan</th>
+                  <th class="py-3 px-4">Metode Uji</th>
+                  <th class="py-3 px-4">Nilai Statistik</th>
+                  <th class="py-3 px-4">Nilai p</th>
+                  <th class="py-3 px-4 rounded-tr-xl">Interpretasi Singkat</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-sman-navy">Belajar Mandiri ↔ Refleksi / Berdoa</td>
+                  <td class="py-3 px-4 font-mono text-xs">Spearman ρ &amp; Kendall τ</td>
+                  <td class="py-3 px-4 font-mono">ρ = 0,3688 • τ = 0,3294</td>
+                  <td class="py-3 px-4 font-mono text-emerald-700 font-semibold">&lt; 0,0001</td>
+                  <td class="py-3 px-4 text-sman-muted">Asosiasi positif terkuat: keteraturan refleksi/doa sejalan dengan konsistensi belajar mandiri.</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-sman-navy">Inisiatif Membantu ↔ Minat Organisasi</td>
+                  <td class="py-3 px-4 font-mono text-xs">Spearman ρ &amp; Kendall τ</td>
+                  <td class="py-3 px-4 font-mono">ρ = 0,2791 • τ = 0,2443</td>
+                  <td class="py-3 px-4 font-mono text-emerald-700 font-semibold">&lt; 0,0001</td>
+                  <td class="py-3 px-4 text-sman-muted">Murid dengan minat organisasi lebih tinggi cenderung lebih sering berinisiatif membantu sesama.</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-sman-navy">Frekuensi Sarapan ↔ Belajar Mandiri</td>
+                  <td class="py-3 px-4 font-mono text-xs">Spearman ρ &amp; Kendall τ</td>
+                  <td class="py-3 px-4 font-mono">ρ = 0,1649 • τ = 0,1419</td>
+                  <td class="py-3 px-4 font-mono text-emerald-700 font-semibold">0,00002</td>
+                  <td class="py-3 px-4 text-sman-muted">Kebiasaan sarapan berkorelasi positif signifikan dengan frekuensi belajar mandiri.</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-sman-navy">Frekuensi Sarapan antar Kelas (10, 11, 12)</td>
+                  <td class="py-3 px-4 font-mono text-xs">Kruskal–Wallis H</td>
+                  <td class="py-3 px-4 font-mono">H = 12,9709</td>
+                  <td class="py-3 px-4 font-mono text-emerald-700 font-semibold">0,00153</td>
+                  <td class="py-3 px-4 text-sman-muted">Terdapat perbedaan bermakna antar tingkat kelas; dapat dilanjutkan dengan Dunn's post-hoc &amp; effect size.</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-sman-navy">Durasi Tidur ↔ Hari Bangun Terencana</td>
+                  <td class="py-3 px-4 font-mono text-xs">Spearman ρ &amp; Kendall τ</td>
+                  <td class="py-3 px-4 font-mono">ρ = 0,1311 • τ = 0,1158</td>
+                  <td class="py-3 px-4 font-mono text-emerald-700 font-semibold">0,00075</td>
+                  <td class="py-3 px-4 text-sman-muted">Durasi tidur yang lebih memadai berkaitan positif dengan ketepatan bangun sesuai rencana.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 6 METODE ANALISIS & ALGORITMA WAJIB / LANJUTAN / EKSPLORATIF / TEXT MINING -->
+        <div class="space-y-6">
+          <div class="reveal">
+            <span class="text-xs font-mono font-bold text-sman-navy uppercase">Kerangka Metodologi &amp; Algoritma</span>
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-sman-navy mt-1">
+              6 Pendekatan Analisis Data, Pemodelan &amp; Text Mining
+            </h3>
+            <p class="text-xs sm:text-sm text-sman-muted mt-1">
+              Rancangan lengkap metode yang diterapkan pada dataset survei G7KAIH SMAN 1 Kota Depok.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- 1. EDA -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal-scale">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-sman-navy text-white">1. EDA (WAJIB)</span>
+                <span class="text-[11px] font-mono text-sman-muted">pandas, numpy, seaborn, matplotlib</span>
               </div>
-              <div class="mt-5 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-700">
-                <strong class="text-navy-900 block mb-1">Rekomendasi Kebijakan:</strong>
-                Program <em>Grab-and-Go Healthy Breakfast</em> di kantin sekolah khusus pukul 06.30–07.00 WIB bagi siswa tingkat akhir.
-              </div>
+              <h4 class="font-extrabold text-sman-navy text-lg mb-2">Exploratory Data Analysis</h4>
+              <p class="text-xs text-sman-muted mb-3">Memahami distribusi, pola, anomali, dan karakteristik dataset (658 baris × 39 kolom; kolom <code>Score</code> seluruhnya kosong/NaN).</p>
+              <ul class="text-xs text-sman-ink space-y-1.5 list-disc pl-4">
+                <li>Frequency distribution &amp; cross-tabulation</li>
+                <li>Histogram &amp; bar chart</li>
+                <li>Missing-value analysis</li>
+                <li>Outlier &amp; konsistensi jawaban</li>
+              </ul>
             </div>
 
-            <!-- Correlation Card 2 -->
-            <div class="reveal reveal-up delay-200 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between gap-2 pb-4 border-b border-slate-100">
-                  <span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-mono text-xs font-bold">χ² = 19.85 | p = 0.008</span>
-                  <span class="text-[11px] font-bold text-emerald-600 uppercase">Signifikan</span>
-                </div>
-                <h3 class="mt-4 font-display text-lg font-bold text-navy-900">
-                  2. Durasi Tidur Malam vs. Frekuensi Melewatkan Sarapan
-                </h3>
-                <p class="mt-2.5 text-sm text-slate-600 leading-relaxed">
-                  <strong>Interpretasi Fisiologis:</strong> Siswa yang tidur &lt; 5 jam mengalami gangguan ritme sirkadian dan penurunan nafsu makan pagi hari, menghasilkan angka <strong>14,7% tidak pernah sarapan</strong>. Kombinasi kurang tidur + perut kosong memicu penurunan fokus belajar hingga 40%.
-                </p>
+            <!-- 2. Correlation Analysis -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal-scale">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-sman-blue text-white">2. KORELASI (WAJIB)</span>
+                <span class="text-[11px] font-mono text-sman-muted">scipy, pandas, statsmodels</span>
               </div>
-              <div class="mt-5 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-700">
-                <strong class="text-navy-900 block mb-1">Rekomendasi Kebijakan:</strong>
-                Edukasi <em>Sleep Hygiene</em> &amp; batas akhir pengumpulan tugas daring maksimal pukul 21.00 WIB oleh seluruh guru mata pelajaran.
-              </div>
+              <h4 class="font-extrabold text-sman-navy text-lg mb-2">Correlation Analysis</h4>
+              <p class="text-xs text-sman-muted mb-3">Mengidentifikasi hubungan antarindikator ordinal dan kategorikal tanpa menyalahgunakan Pearson pada kategori ordinal.</p>
+              <ul class="text-xs text-sman-ink space-y-1.5 list-disc pl-4">
+                <li>Spearman rank correlation &amp; Kendall's Tau</li>
+                <li>Cramér's V untuk variabel kategorikal nominal</li>
+                <li>Chi-square test untuk asosiasi kategorikal</li>
+              </ul>
             </div>
 
-            <!-- Correlation Card 3 -->
-            <div class="reveal reveal-right delay-300 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between gap-2 pb-4 border-b border-slate-100">
-                  <span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-mono text-xs font-bold">χ² = 22.10 | p = 0.002</span>
-                  <span class="text-[11px] font-bold text-emerald-600 uppercase">Signifikan</span>
-                </div>
-                <h3 class="mt-4 font-display text-lg font-bold text-navy-900">
-                  3. Distraksi Gawai Malam vs. Konsistensi Belajar Mandiri
-                </h3>
-                <p class="mt-2.5 text-sm text-slate-600 leading-relaxed">
-                  <strong>Interpretasi Perilaku Digital:</strong> Siswa yang menyebut media sosial/game sebagai pengganggu tidur memiliki probabilitas 2,3x lebih besar untuk hanya belajar mandiri saat menjelang ujian (*sistem kebut semalam*), bukan secara rutin harian.
-                </p>
+            <!-- 3. Group Comparison -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal-scale">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-sman-emerald text-white">3. GROUP COMP (WAJIB)</span>
+                <span class="text-[11px] font-mono text-sman-muted">Kelas X, XI, XII</span>
               </div>
-              <div class="mt-5 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-700">
-                <strong class="text-navy-900 block mb-1">Rekomendasi Kebijakan:</strong>
-                Implementasi fitur <em>Focus Mode / App Timer</em> berbasis peer-accountability dalam kelompok belajar kelas.
+              <h4 class="font-extrabold text-sman-navy text-lg mb-2">Group Comparison</h4>
+              <p class="text-xs text-sman-muted mb-3">Mengetahui apakah pola tidur, belajar, atau partisipasi sosial berbeda antartingkat kelas.</p>
+              <ul class="text-xs text-sman-ink space-y-1.5 list-disc pl-4">
+                <li>Kruskal–Wallis test &amp; Chi-square</li>
+                <li>Dunn's post-hoc test (jika diperlukan)</li>
+                <li>Effect size ($arepsilon^2$ / Cramér's V)</li>
+              </ul>
+            </div>
+
+            <!-- 4. Regression Analysis -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal-scale">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-amber-600 text-white">4. REGRESI (LANJUTAN)</span>
+                <span class="text-[11px] font-mono text-sman-muted">statsmodels / mord</span>
               </div>
+              <h4 class="font-extrabold text-sman-navy text-lg mb-2">Regression Analysis</h4>
+              <p class="text-xs text-sman-muted mb-3">Menguji hubungan multivariabel sambil mengendalikan variabel pengganggu terukur (tanpa mengklaim kausalitas penuh).</p>
+              <ul class="text-xs text-sman-ink space-y-1.5 list-disc pl-4">
+                <li>Ordinal logistic regression &amp; Multinomial logistic regression</li>
+                <li>Multiple regression untuk outcome numerik</li>
+                <li>Contoh: belajar mandiri vs refleksi dg kontrol kelas &amp; tidur</li>
+              </ul>
+            </div>
+
+            <!-- 5. Clustering / Segmentation -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal-scale">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-indigo-700 text-white">5. CLUSTERING (EKSPLORATIF)</span>
+                <span class="text-[11px] font-mono text-sman-muted">kmodes / scipy</span>
+              </div>
+              <h4 class="font-extrabold text-sman-navy text-lg mb-2">Clustering / Segmentation</h4>
+              <p class="text-xs text-sman-muted mb-3">Menemukan kelompok murid berbasis pola kebiasaan empiris dari data (bukan ditetapkan paksa dari awal).</p>
+              <ul class="text-xs text-sman-ink space-y-1.5 list-disc pl-4">
+                <li>K-Modes (kategorikal) &amp; K-Prototypes (campuran)</li>
+                <li>Hierarchical clustering dengan jarak sesuai</li>
+                <li>Segmen: tidur teratur, belajar tinggi-tidur kurang teratur, sosial tinggi</li>
+              </ul>
+            </div>
+
+            <!-- 6. Text Mining -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm reveal-scale">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-800 text-white">6. TEXT MINING (WAJIB REFLEKSI)</span>
+                <span class="text-[11px] font-mono text-sman-muted">scikit-learn TfidfVectorizer</span>
+              </div>
+              <h4 class="font-extrabold text-sman-navy text-lg mb-2">Text Mining &amp; Thematic Coding</h4>
+              <p class="text-xs text-sman-muted mb-3">Mengekstraksi tema jawaban terbuka &amp; hambatan G7KAIH secara sistematis.</p>
+              <ul class="text-xs text-sman-ink space-y-1.5 list-disc pl-4">
+                <li>Text normalization &amp; keyword extraction</li>
+                <li>Thematic coding &amp; manual validation</li>
+                <li>TF-IDF eksplorasi kata kunci (beban akademik, gawai, waktu, motivasi)</li>
+              </ul>
             </div>
           </div>
         </div>
 
-        <!-- =============================================================== -->
-        <!-- SECTION: METODE ANALISIS & PIPELINE GOOGLE COLAB (PYTHON)       -->
-        <!-- =============================================================== -->
-        <div id="python-methodology" class="bg-navy-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl">
-          <div class="max-w-3xl reveal reveal-up">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30">
-              <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Reproducible Data Science Pipeline
-            </span>
-            <h2 class="mt-3 font-display text-2xl sm:text-3xl font-extrabold text-white">
-              Metode Analisis &amp; Pipeline Python (Google Colab)
-            </h2>
-            <p class="mt-2 text-slate-300 text-sm sm:text-base">
-              Seluruh insight pada dashboard ini diproses melalui 4 tahapan komputasi data science yang dapat direplikasi secara transparan di Google Colaboratory.
-            </p>
+        <!-- PYTHON GOOGLE COLAB PIPELINE -->
+        <div class="bg-slate-900 text-slate-100 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-700 reveal">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <span class="text-xs font-mono text-sman-gold font-bold uppercase">Google Colab Ready • Python Script</span>
+              <h3 class="text-xl sm:text-2xl font-extrabold text-white mt-0.5">Kode Analisis Statistik, Clustering &amp; TF-IDF</h3>
+            </div>
+            <button onclick="copyColabCode()" id="btn-copy-code" class="px-4 py-2 rounded-xl bg-sman-gold hover:bg-amber-400 text-sman-navy font-extrabold text-xs transition cursor-pointer self-start sm:self-auto">
+              Salin Kode Python
+            </button>
           </div>
-
-          <!-- 4 Pipeline Steps -->
-          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="reveal reveal-up delay-100 p-5 rounded-2xl bg-white/5 border border-white/10">
-              <span class="text-xs font-mono font-bold text-blue-400">TAHAP 01</span>
-              <h3 class="mt-1 font-display font-bold text-base text-white">Data Cleaning &amp; Multi-Label Parsing</h3>
-              <p class="mt-2 text-xs text-slate-300 leading-relaxed">
-                Standardisasi 37 kolom kuesioner, penanganan missing values, dan pemecahan jawaban multi-pilihan (hambatan &amp; kebiasaan) menggunakan <code class="text-amber-300">str.get_dummies()</code>.
-              </p>
-            </div>
-
-            <div class="reveal reveal-up delay-200 p-5 rounded-2xl bg-white/5 border border-white/10">
-              <span class="text-xs font-mono font-bold text-emerald-400">TAHAP 02</span>
-              <h3 class="mt-1 font-display font-bold text-base text-white">Uji Independensi Chi-Square</h3>
-              <p class="mt-2 text-xs text-slate-300 leading-relaxed">
-                Membangun tabel kontingensi (<code class="text-amber-300">pd.crosstab</code>) dan menghitung nilai p-value via <code class="text-amber-300">scipy.stats.chi2_contingency</code> untuk memvalidasi korelasi antar kebiasaan.
-              </p>
-            </div>
-
-            <div class="reveal reveal-up delay-300 p-5 rounded-2xl bg-white/5 border border-white/10">
-              <span class="text-xs font-mono font-bold text-purple-400">TAHAP 03</span>
-              <h3 class="mt-1 font-display font-bold text-base text-white">K-Means Clustering (3 Segmen Siswa)</h3>
-              <p class="mt-2 text-xs text-slate-300 leading-relaxed">
-                Mengelompokkan 658 siswa menjadi 3 klaster profil: <em>(1) Mandiri &amp; Seimbang (29%)</em>, <em>(2) Pejuang Kurang Tidur (44%)</em>, dan <em>(3) Rentan Distraksi Digital (27%)</em>.
-              </p>
-            </div>
-
-            <div class="reveal reveal-up delay-400 p-5 rounded-2xl bg-white/5 border border-white/10">
-              <span class="text-xs font-mono font-bold text-amber-400">TAHAP 04</span>
-              <h3 class="mt-1 font-display font-bold text-base text-white">Association Rule Mining (Apriori)</h3>
-              <p class="mt-2 text-xs text-slate-300 leading-relaxed">
-                Menemukan aturan asosiasi <em>If-Then</em> menggunakan <code class="text-amber-300">mlxtend.frequent_patterns</code> untuk memetakan kombinasi hambatan yang memicu turunnya kedisiplinan.
-              </p>
-            </div>
-          </div>
-
-          <!-- Copyable Python Code Block -->
-          <div class="mt-8 reveal reveal-up">
-            <div class="flex items-center justify-between px-4 py-3 rounded-t-2xl bg-slate-950 border border-slate-800">
-              <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                <span class="ml-2 font-mono text-xs text-slate-400">g7kaih_sman1_depok_analysis.py (Google Colab Ready)</span>
-              </div>
-              <button onclick="copyPythonCode()" id="copy-code-btn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-royal-600 hover:bg-royal-500 text-white text-xs font-semibold transition-all">
-                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                <span id="copy-code-text">Salin Kode Python</span>
-              </button>
-            </div>
-            <pre class="p-4 sm:p-6 rounded-b-2xl bg-[#060B14] border-x border-b border-slate-800 overflow-x-auto text-xs sm:text-[13px] font-mono text-slate-200 leading-relaxed"><code id="python-code-snippet"># ==============================================================================
-# PIPELINE ANALISIS DATA SURVEI G7KAIH - SMAN 1 KOTA DEPOK (N = 658)
-# ==============================================================================
-import pandas as pd
+          <pre id="colab-code-block" class="bg-slate-950/90 rounded-2xl p-4 sm:p-5 overflow-x-auto text-xs font-mono leading-relaxed text-emerald-300 border border-slate-800"><code>import pandas as pd
 import numpy as np
-from scipy.stats import chi2_contingency
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
+from scipy.stats import spearmanr, kendalltau, chi2_contingency, kruskal
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-# 1. Load Dataset Survei SMAN 1 Kota Depok
-file_path = '_Survei 7 Kebiasaan Anak Indonesia Hebat di lingkungan SMAN 1 Kota Depok (Jawaban) - Data Asli (1).csv'
-df = pd.read_csv(file_path)
+# 1. Load &amp; Bersihkan Nama Kolom
+df = pd.read_csv("survei_g7kaih_sman1_depok.csv")
+df.columns = [c.strip() for c in df.columns]
 
-# 2. Uji Korelasi Chi-Square: Tingkat Kelas vs Kebiasaan Sarapan Pagi
-col_kelas = 'Saat ini kamu berada di tingkat kelas berapa?'
-col_sarapan = 'Dalam tujuh hari terakhir, seberapa sering kamu sarapan sebelum memulai aktivitas utama di pagi hari?'
+# Missing-value check
+print("Missing values:
+", df.isnull().sum()[df.isnull().sum() &gt; 0])
 
-ct_sarapan = pd.crosstab(df[col_kelas], df[col_sarapan])
-chi2, p_val, dof, expected = chi2_contingency(ct_sarapan)
-print(f"[Uji Chi-Square Kelas vs Sarapan] Chi2 = {chi2:.2f}, p-value = {p_val:.5f}")
+# 2. Mapping Skala Ordinal (Hindari Pearson mentah pada data ordinal)
+sleep_map = {"kurang dari 5 Jam": 1, "5 hingga 6 Jam": 2, "7 hingga 8 Jam": 3, "Lebih dari 8 Jam": 4}
+freq_map = {"Tidak Pernah": 1, "Tidak sama sekali": 1, "Jarang": 2, "Kadang-kadang": 3, "Sering": 4, "Selalu": 5, "Sangat sering": 5}
 
-# 3. Parsing Multi-Label Hambatan Utama G7KAIH
-col_hambatan = [c for c in df.columns if 'hambatan' in c.lower()][0]
-hambatan_dummies = df[col_hambatan].str.get_dummies(sep=', ')
-print("\nTop 5 Hambatan Siswa SMAN 1 Depok (%):")
-print((hambatan_dummies.mean() * 100).sort_values(ascending=False).head(5))
+df["sleep_ord"] = df["Biasanya, berapa lama kamu tidur malam sebelum hari sekolah?"].map(sleep_map)
+df["study_ord"] = df["Dalam tujuh hari terakhir, seberapa sering kamu belajar secara mandiri di luar kegiatan pembelajaran wajib di sekolah?"].map(freq_map)
+df["reflect_ord"] = df["Dalam tujuh hari terakhir, seberapa sering kamu meluangkan waktu untuk kegiatan refleksi, berdoa, dan kegiatan lainnya diluar ibadah wajib?"].map(freq_map)
+df["breakfast_ord"] = df["Dalam tujuh hari terakhir, seberapa sering kamu sarapan sebelum memulai aktivitas utama di pagi hari?"].map(freq_map)
 
-# 4. Segmentasi Profil Siswa menggunakan K-Means Clustering (3 Klaster)
-# Encoding skor ordinal tidur, sarapan, belajar mandiri, dan olahraga
-fitur_numerik = df.select_dtypes(include=[np.number]).fillna(0)
-if fitur_numerik.shape[1] >= 2:
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(fitur_numerik)
-    kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
-    df['Cluster_Profil'] = kmeans.fit_predict(X_scaled)
-    print("\nDistribusi Klaster Siswa:", df['Cluster_Profil'].value_counts().to_dict())</code></pre>
-          </div>
+# 3. Spearman &amp; Kendall's Tau
+sub = df[["study_ord", "reflect_ord"]].dropna()
+rho, p_rho = spearmanr(sub["study_ord"], sub["reflect_ord"])
+tau, p_tau = kendalltau(sub["study_ord"], sub["reflect_ord"])
+print(f"Spearman rho={rho:.4f} (p={p_rho:.4e}), Kendall tau={tau:.4f} (p={p_tau:.4e})")
+
+# 4. Kruskal-Wallis Antar Tingkat Kelas (10, 11, 12)
+groups = [g["breakfast_ord"].dropna().values for _, g in df.groupby("Saat ini kamu berada di tingkat kelas berapa?")]
+kw_stat, kw_p = kruskal(*groups)
+print(f"Kruskal-Wallis Sarapan antar Kelas: H={kw_stat:.4f}, p={kw_p:.4f}")
+
+# 5. TF-IDF Keyword Exploration pada Hambatan &amp; Refleksi
+obs_col = "Menurutmu, apa hambatan yang paling sering membuatmu kesulitan menerapkan G7KAIH?"
+texts = df[obs_col].dropna().astype(str).tolist()
+vec = TfidfVectorizer(max_features=12)
+X = vec.fit_transform(texts)
+scores = np.asarray(X.sum(axis=0)).ravel()
+for term, val in sorted(zip(vec.get_feature_names_out(), scores), key=lambda x: -x[1]):
+    print(f"Token: {term:18s} | TF-IDF Score: {val:.2f}")</code></pre>
         </div>
 
       </div>
     </div>
-
-    <!-- Dashboard Footer -->
-    <footer class="bg-navy-900 text-slate-400 py-8 border-t border-slate-800 text-xs">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p>© 2026 SMANSA DataLab — Dashboard Analitik G7KAIH SMAN 1 Kota Depok (n = 658 Responden).</p>
-        <button onclick="switchPage('landing')" class="text-blue-400 hover:text-blue-300 font-semibold">
-          ← Kembali ke Halaman Utama (Profil &amp; Solusi)
-        </button>
-      </div>
-    </footer>
   </section>
 
-  <!-- ===================================================================== -->
-  <!-- INTERACTIVE INSIGHT DETAIL MODAL (WHEN CLICKING FLOATING BUBBLE)      -->
-  <!-- ===================================================================== -->
-  <div id="insight-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 transform transition-all">
-      <div class="flex items-center justify-between mb-4">
-        <span id="modal-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-royal-50 text-royal-600">
-          Detail Temuan
-        </span>
-        <button onclick="closeInsightModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <h3 id="modal-title" class="font-display text-xl font-extrabold text-navy-900">Judul Insight</h3>
-      <p id="modal-stat" class="mt-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-navy-900"></p>
-      <p id="modal-explanation" class="mt-4 text-sm text-slate-600 leading-relaxed"></p>
-      <div class="mt-5 p-4 rounded-xl bg-emerald-50 border border-emerald-200/80">
-        <p class="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-1">Aksi Solusi Sekolah:</p>
-        <p id="modal-action" class="text-xs sm:text-sm text-emerald-900 leading-relaxed"></p>
-      </div>
-      <div class="mt-6 flex justify-end gap-3">
-        <button onclick="closeInsightModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-semibold">
-          Tutup
-        </button>
-        <a href="#analytics-charts" onclick="closeInsightModal()" class="px-4 py-2 rounded-xl bg-royal-600 hover:bg-royal-700 text-white text-xs sm:text-sm font-semibold">
-          Lihat Grafik Terkait ↓
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Notification (Replaces alert()) -->
-  <div id="toast-notification" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-xl bg-navy-900 text-white text-xs sm:text-sm font-medium shadow-2xl border border-slate-700">
-    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
-    <span id="toast-message">Kode Python berhasil disalin ke clipboard!</span>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- JAVASCRIPT LOGIC: SPA NAVIGATION, PARALLAX, ANIMATIONS & CHART.JS     -->
-  <!-- ===================================================================== -->
   <script>
-    // Initialize Lucide Icons
-    lucide.createIcons();
+    const SURVEY_DATA = {
+  "n": 658,
+  "kelas": {
+    "10": 257,
+    "11": 205,
+    "12": 196
+  },
+  "awareness": {
+    "Ya, mengetahui dan memahami dengan baik": 568,
+    "Pernah mendengar, tetapi belum memahami": 80,
+    "Belum pernah mendengar": 10
+  },
+  "wake_days": {
+    "7 Hari": 269,
+    "5 Hari": 194,
+    "6 Hari": 59,
+    "3 Hari": 46,
+    "4 Hari": 45,
+    "Belum Pernah": 21,
+    "2 Hari": 16,
+    "1 Hari": 8
+  },
+  "wake_time": {
+    "04.30 - 05.00": 257,
+    "04.00 - 04.30": 178,
+    "05.00 - 05.30": 155,
+    "Sebelum pukul 04.00": 44,
+    "Setelah pukul 05.30": 24
+  },
+  "sleep_start": {
+    "22.00 - 22.59": 282,
+    "21.00 - 21.59": 209,
+    "23.00 - 23.59": 99,
+    "Sebelum pukul 21.00": 37,
+    "Lebih dari jam 00.00": 31
+  },
+  "sleep_dur": {
+    "5 hingga 6 Jam": 369,
+    "7 hingga 8 Jam": 207,
+    "kurang dari 5 Jam": 68,
+    "Lebih dari 8 Jam": 14
+  },
+  "sleep_reg": {
+    "Cukup teratur.": 306,
+    "Kurang teratur.": 159,
+    "Saya tidak memiliki jadwal tidur yang tetap.": 90,
+    "Sangat teratur.": 61,
+    "Sangat tidak teratur.": 32,
+    "Tidak dapat memperkirakan.": 10
+  },
+  "breakfast": {
+    "Selalu": 237,
+    "Sering": 140,
+    "Kadang-kadang": 126,
+    "Jarang": 117,
+    "Tidak Pernah": 38
+  },
+  "study_freq": {
+    "Sering": 294,
+    "Kadang-kadang": 228,
+    "Selalu": 88,
+    "Jarang": 44,
+    "Tidak sama sekali": 4
+  },
+  "exercise": {
+    "Ringan (<30 menit / Hari)": 303,
+    "Sedang (30 - 60 menit / Hari)": 196,
+    "Aktif (60 - 120 menit / Hari)": 95,
+    "Sangat Aktif (>120 menit / Hari)": 32,
+    "Tidak sama sekali (0 Menit)": 32
+  },
+  "top_habit": {
+    "Beribadah": 207,
+    "Bangun pagi": 160,
+    "Makan sehat dan bergizi": 102,
+    "Berolahraga": 93,
+    "Gemar belajar": 48,
+    "Tidur cepat": 24,
+    "Bermasyarakat": 24
+  },
+  "sleep_dur_by_class": {
+    "10": {
+      "5 hingga 6 Jam": 148,
+      "7 hingga 8 Jam": 76,
+      "kurang dari 5 Jam": 31,
+      "Lebih dari 8 Jam": 2
+    },
+    "11": {
+      "5 hingga 6 Jam": 113,
+      "7 hingga 8 Jam": 59,
+      "kurang dari 5 Jam": 25,
+      "Lebih dari 8 Jam": 8
+    },
+    "12": {
+      "5 hingga 6 Jam": 108,
+      "7 hingga 8 Jam": 72,
+      "kurang dari 5 Jam": 12,
+      "Lebih dari 8 Jam": 4
+    }
+  },
+  "breakfast_by_class": {
+    "10": {
+      "Selalu": 118,
+      "Sering": 48,
+      "Kadang-kadang": 40,
+      "Jarang": 33,
+      "Tidak Pernah": 18
+    },
+    "11": {
+      "Selalu": 64,
+      "Sering": 50,
+      "Jarang": 40,
+      "Kadang-kadang": 36,
+      "Tidak Pernah": 15
+    },
+    "12": {
+      "Selalu": 55,
+      "Kadang-kadang": 50,
+      "Jarang": 44,
+      "Sering": 42,
+      "Tidak Pernah": 5
+    }
+  },
+  "study_by_class": {
+    "10": {
+      "Sering": 113,
+      "Kadang-kadang": 87,
+      "Selalu": 39,
+      "Jarang": 18
+    },
+    "11": {
+      "Sering": 95,
+      "Kadang-kadang": 69,
+      "Selalu": 24,
+      "Jarang": 13,
+      "Tidak sama sekali": 4
+    },
+    "12": {
+      "Sering": 86,
+      "Kadang-kadang": 72,
+      "Selalu": 25,
+      "Jarang": 13
+    }
+  },
+  "sleep_vs_wake": {
+    "1 Hari": {
+      "5 hingga 6 Jam": 4,
+      "7 hingga 8 Jam": 1,
+      "Lebih dari 8 Jam": 1,
+      "kurang dari 5 Jam": 2
+    },
+    "2 Hari": {
+      "5 hingga 6 Jam": 6,
+      "7 hingga 8 Jam": 5,
+      "Lebih dari 8 Jam": 0,
+      "kurang dari 5 Jam": 5
+    },
+    "3 Hari": {
+      "5 hingga 6 Jam": 26,
+      "7 hingga 8 Jam": 13,
+      "Lebih dari 8 Jam": 0,
+      "kurang dari 5 Jam": 7
+    },
+    "4 Hari": {
+      "5 hingga 6 Jam": 30,
+      "7 hingga 8 Jam": 10,
+      "Lebih dari 8 Jam": 1,
+      "kurang dari 5 Jam": 4
+    },
+    "5 Hari": {
+      "5 hingga 6 Jam": 119,
+      "7 hingga 8 Jam": 57,
+      "Lebih dari 8 Jam": 2,
+      "kurang dari 5 Jam": 16
+    },
+    "6 Hari": {
+      "5 hingga 6 Jam": 36,
+      "7 hingga 8 Jam": 18,
+      "Lebih dari 8 Jam": 0,
+      "kurang dari 5 Jam": 5
+    },
+    "7 Hari": {
+      "5 hingga 6 Jam": 139,
+      "7 hingga 8 Jam": 97,
+      "Lebih dari 8 Jam": 10,
+      "kurang dari 5 Jam": 23
+    },
+    "Belum Pernah": {
+      "5 hingga 6 Jam": 9,
+      "7 hingga 8 Jam": 6,
+      "Lebih dari 8 Jam": 0,
+      "kurang dari 5 Jam": 6
+    }
+  }
+};
 
-    // -----------------------------------------------------------------------
-    // 1. DATA REPOSITORY (SURVEI SMAN 1 KOTA DEPOK, N = 658)
-    // -----------------------------------------------------------------------
-    const surveyDataByGrade = {
-      all: {
-        respondents: '658',
-        respondentsSub: '100% Populasi Survei SMAN 1 Depok',
-        sleepShort: '66,4%',
-        sleepSub: '56,1% (5–6 jam) & 10,3% (< 5 jam)',
-        breakfastAlways: '37,8%',
-        breakfastSub: '249 dari 658 siswa selalu sarapan',
-        digitalLearn: '76,4%',
-        digitalSub: '41,9% Video Edukasi + 34,5% AI',
-        habits: [31.5, 24.3, 18.2, 11.4, 7.4, 3.6, 3.6],
-        sleepDist: [10.3, 56.1, 29.8, 3.8],
-        obstacles: [82.8, 59.4, 51.2, 34.6, 22.8],
-        learningSources: [41.9, 34.5, 16.7, 6.9]
-      },
-      '10': {
-        respondents: '257',
-        respondentsSub: '39,1% dari Total Responden (Kelas X)',
-        sleepShort: '61,5%',
-        sleepSub: '53,3% (5–6 jam) & 8,2% (< 5 jam)',
-        breakfastAlways: '45,9%',
-        breakfastSub: 'Tertinggi dibanding angkatan lain',
-        digitalLearn: '74,3%',
-        digitalSub: '43,2% Video Edukasi + 31,1% AI',
-        habits: [32.7, 26.5, 17.5, 10.9, 5.4, 3.9, 3.1],
-        sleepDist: [8.2, 53.3, 33.9, 4.6],
-        obstacles: [79.4, 62.6, 49.8, 31.5, 21.0],
-        learningSources: [43.2, 31.1, 18.7, 7.0]
-      },
-      '11': {
-        respondents: '205',
-        respondentsSub: '31,2% dari Total Responden (Kelas XI)',
-        sleepShort: '67,8%',
-        sleepSub: '57,1% (5–6 jam) & 10,7% (< 5 jam)',
-        breakfastAlways: '37,1%',
-        breakfastSub: 'Mulai menurun akibat padat organisasi',
-        digitalLearn: '77,6%',
-        digitalSub: '41,5% Video Edukasi + 36,1% AI',
-        habits: [31.2, 23.4, 18.5, 11.7, 7.3, 3.4, 4.5],
-        sleepDist: [10.7, 57.1, 28.8, 3.4],
-        obstacles: [84.4, 58.5, 52.7, 36.1, 24.4],
-        learningSources: [41.5, 36.1, 15.6, 6.8]
-      },
-      '12': {
-        respondents: '196',
-        respondentsSub: '29,8% dari Total Responden (Kelas XII)',
-        sleepShort: '71,4%',
-        sleepSub: '58,7% (5–6 jam) & 12,7% (< 5 jam)',
-        breakfastAlways: '28,1%',
-        breakfastSub: 'Turun drastis akibat persiapan ujian',
-        digitalLearn: '78,1%',
-        digitalSub: '40,8% Video Edukasi + 37,3% AI',
-        habits: [30.1, 22.4, 18.9, 11.7, 10.2, 3.6, 3.1],
-        sleepDist: [12.7, 58.7, 25.5, 3.1],
-        obstacles: [85.7, 56.1, 51.5, 37.2, 23.5],
-        learningSources: [40.8, 37.3, 15.3, 6.6]
-      }
-    };
-
-    const insightDetails = [
+    const BUBBLE_INSIGHTS = [
       {
-        badge: 'Paradoks Tidur • N = 658',
-        title: 'Disiplin Bangun Pagi Namun Defisit Jam Tidur Kronis',
-        stat: '66,4% siswa tidur ≤ 6 jam (56,1% tidur 5–6 jam & 10,3% < 5 jam), sementara 72,8% bangun sebelum pukul 05.00 WIB.',
-        explanation: 'Siswa SMAN 1 Kota Depok menunjukkan kedisiplinan tinggi untuk bangun subuh/pagi hari agar tidak terlambat. Namun, karena baru mulai tidur pukul 22.00–00.30 WIB, akumulasi utang tidur (sleep debt) terjadi sepanjang pekan sekolah.',
-        action: 'Kampanye "Digital Sunset 21:00" dan koordinasi batas pengumpulan tugas daring sekolah agar siswa dapat tidur maksimal pukul 21.30 WIB.'
+        tag: "INSIGHT #01 • KEDISIPLINAN TIDUR",
+        title: "Defisit Durasi Tidur Malam pada Mayoritas Murid",
+        body: "Dari 658 responden, sebanyak 369 murid (56,1%) tidur 5–6 jam dan 68 murid (10,3%) tidur kurang dari 5 jam pada malam sebelum hari sekolah, sementara hanya 207 murid (31,5%) yang tidur 7–8 jam.",
+        action: "Terapkan kesepakatan Digital Sunset 21:30 di rumah agar waktu istirahat lebih terjaga dan tidak bergantung pada alarm ekstrem di pagi hari."
       },
       {
-        badge: 'Hambatan Eksekusi • Multi-Respon',
-        title: 'Beban Jadwal Padat & Distraksi Gawai sebagai Penghambat Ganda',
-        stat: '82,8% (545 dari 658 siswa) menyebut jadwal & tugas padat sebagai hambatan utama, diikuti ponsel/media sosial (59,4%).',
-        explanation: 'Kombinasi tugas sekolah, bimbel/les, organisasi, dan scrolling media sosial di malam hari membuat waktu istirahat dan olahraga tergerus habis.',
-        action: 'Pelatihan manajemen waktu metode Pomodoro & Time-Blocking di kelas bimbingan konseling.'
+        tag: "INSIGHT #02 • LITERASI G7KAIH",
+        title: "Tingkat Pemahaman G7KAIH Sudah Tinggi (86,3%)",
+        body: "Sebanyak 568 dari 658 murid menyatakan sudah mengetahui dan memahami G7KAIH dengan baik, 80 murid pernah mendengar namun belum memahami, dan hanya 10 murid yang belum pernah mendengar.",
+        action: "Fokus program sekolah sebaiknya bergeser dari sekadar sosialisasi informasi menuju pendampingan konsistensi mingguan dan penguatan ekosistem kebiasaan."
       },
       {
-        badge: 'Uji Chi-Square • p = 0.00014',
-        title: 'Penurunan Tajam Kebiasaan Sarapan pada Kelas 12',
-        stat: 'Kebiasaan selalu sarapan turun dari 45,9% (Kelas 10) menjadi 37,1% (Kelas 11) dan hanya 28,1% (Kelas 12).',
-        explanation: 'Beban persiapan kelulusan dan ujian masuk perguruan tinggi membuat siswa kelas 12 sering tidur larut dan terburu-buru di pagi hari sehingga melewatkan sarapan.',
-        action: 'Program kantin sehat "Morning Fuel" pukul 06.30–07.00 WIB dengan menu praktis bergizi tinggi.'
+        tag: "INSIGHT #03 • HAMBATAN UTAMA",
+        title: "Beban Jadwal/Tugas, Gawai & Manajemen Waktu Mendominasi",
+        body: "Dalam jawaban hambatan penerapan G7KAIH, jadwal sekolah & tugas padat muncul pada 545 respons, disusul penggunaan ponsel/media sosial/permainan digital (391 respons) dan kesulitan mengatur waktu (372 respons).",
+        action: "Sediakan klinik manajemen waktu (time blocking & prioritas tugas) serta pembatasan notifikasi gawai saat jam belajar dan malam hari."
       },
       {
-        badge: 'Transformasi Digital • 76,4%',
-        title: 'Dominasi Video Edukasi & Artificial Intelligence (AI)',
-        stat: '41,9% memilih Video Edukasi dan 34,5% mengandalkan AI sebagai sumber belajar utama, melampaui Buku Cetak (16,7%).',
-        explanation: 'Pelajar SMA saat ini sangat adaptif terhadap teknologi pembelajaran visual dan generatif AI untuk memahami materi secara cepat.',
-        action: 'Modul literasi AI etis di sekolah agar siswa menggunakan AI sebagai tutor diskusi, bukan sekadar penyalin tugas.'
+        tag: "INSIGHT #04 • KEBIASAAN TERKUAT",
+        title: "Beribadah & Bangun Pagi Menjadi Pilar Terkuat",
+        body: "Sebagai kebiasaan G7KAIH yang paling sering dilakukan, Beribadah dipilih oleh 207 murid dan Bangun pagi oleh 160 murid, diikuti Makan sehat dan bergizi (102) serta Berolahraga (93).",
+        action: "Gunakan kebiasaan ibadah dan bangun pagi yang sudah kuat sebagai anchor habit untuk membangun kebiasaan belajar mandiri dan sarapan sehat."
       },
       {
-        badge: 'Peta 7 Kebiasaan G7KAIH',
-        title: 'Kesenjangan antara Kebiasaan Spiritual/Pagi vs. Fisik/Sosial',
-        stat: 'Beribadah (31,5%) & Bangun Pagi (24,3%) paling dominan, sedangkan Tidur Cepat & Bermasyarakat (masing-masing 3,6%) terendah.',
-        explanation: 'Kebiasaan yang terikat rutinitas harian wajib berjalan baik, namun kebiasaan yang membutuhkan inisiatif waktu luang (olahraga teratur, tidur cepat, kegiatan sosial) masih tertinggal.',
-        action: 'Pembentukan Peer-Support Study & Sport Club lintas kelas setiap akhir pekan.'
+        tag: "INSIGHT #05 • KORELASI BELAJAR & REFLEKSI",
+        title: "Korelasi Positif Signifikan Antara Refleksi/Doa & Belajar Mandiri",
+        body: "Uji korelasi peringkat non-parametrik menunjukkan hubungan positif paling menonjol antara frekuensi refleksi/berdoa dan belajar mandiri (Spearman ρ = 0,3688; Kendall τ = 0,3294; p < 0,0001).",
+        action: "Dorong rutinitas refleksi singkat sebelum belajar mandiri agar murid lebih tenang, fokus, dan memiliki tujuan belajar yang jelas."
       },
       {
-        badge: 'Uji Chi-Square • p = 0.008',
-        title: 'Efek Domino Kurang Tidur terhadap Melewatkan Sarapan',
-        stat: 'Kelompok siswa yang tidur < 5 jam memiliki proporsi "Tidak Pernah Sarapan" tertinggi sebesar 14,7%.',
-        explanation: 'Tidur terlalu larut mengganggu ritme metabolisme pagi hari dan mempersempit waktu persiapan sebelum berangkat sekolah, memicu risiko kelelahan ganda.',
-        action: 'Skrining rutin oleh guru BK bagi siswa yang sering mengantuk di jam pelajaran pertama.'
-      },
-      {
-        badge: 'Tingkat Pemahaman • 86,3%',
-        title: 'Masalahnya Bukan Kurang Sosialisasi, Melainkan Sistem Eksekusi',
-        stat: '86,3% siswa SMAN 1 Kota Depok menyatakan sudah memahami konsep G7KAIH dengan baik.',
-        explanation: 'Karena literasi konsep sudah sangat tinggi, pendekatan ceramah satu arah tidak lagi efektif. Siswa membutuhkan sistem pendukung lingkungan dan manajemen waktu praktis.',
-        action: 'Mengubah pendekatan sosialisasi menjadi tantangan kebiasaan berbasis komunitas kelas (gamifikasi positif).'
+        tag: "INSIGHT #06 • PERBEDAAN ANTAR KELAS",
+        title: "Pola Sarapan Berbeda Signifikan Antar Tingkat Kelas",
+        body: "Uji Kruskal–Wallis menunjukkan perbedaan signifikan frekuensi sarapan antarkelas 10, 11, dan 12 (H = 12,9709; p = 0,00153), mencerminkan dinamika rutinitas pagi yang berbeda di tiap jenjang.",
+        action: "Sesuaikan strategi pembiasaan pagi per jenjang kelas serta lakukan uji lanjutan Dunn's post-hoc dan effect size di notebook analisis."
       }
     ];
 
-    // -----------------------------------------------------------------------
-    // 2. SPA PAGE SWITCHING (LANDING <-> DASHBOARD)
-    // -----------------------------------------------------------------------
-    let chartsInitialized = false;
+    function createAvatarFallback(initials, name) {
+      const div = document.createElement('div');
+      div.className = 'w-full h-full flex items-center justify-center bg-gradient-to-br from-sman-navy to-sman-blue text-sman-gold font-extrabold text-xl select-none';
+      div.title = name;
+      div.textContent = initials;
+      return div;
+    }
 
+    // Page Switching
     function switchPage(pageName) {
-      const landingEl = document.getElementById('page-landing');
-      const dashboardEl = document.getElementById('page-dashboard');
-      const tabLanding = document.getElementById('tab-landing');
-      const tabDashboard = document.getElementById('tab-dashboard');
-      const landingLinks = document.getElementById('landing-quick-links');
-      const dashboardLinks = document.getElementById('dashboard-quick-links');
+      const landing = document.getElementById('page-landing');
+      const dashboard = document.getElementById('page-dashboard');
+      const btnLanding = document.getElementById('btn-nav-landing');
+      const btnDashboard = document.getElementById('btn-nav-dashboard');
 
       if (pageName === 'dashboard') {
-        landingEl.classList.add('hidden');
-        dashboardEl.classList.remove('hidden');
-
-        tabDashboard.classList.add('bg-navy-900', 'text-white', 'shadow-sm');
-        tabDashboard.classList.remove('text-slate-600');
-        tabLanding.classList.remove('bg-white', 'text-navy-900', 'shadow-sm');
-        tabLanding.classList.add('text-slate-600');
-
-        landingLinks.classList.add('hidden');
-        landingLinks.classList.remove('lg:flex');
-        dashboardLinks.classList.remove('hidden');
-        dashboardLinks.classList.add('lg:flex');
-
+        landing.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        btnDashboard.classList.add('nav-active');
+        btnLanding.classList.remove('nav-active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        if (!chartsInitialized) {
-          initDashboardCharts();
-          chartsInitialized = true;
-        }
-        setTimeout(triggerRevealCheck, 120);
+        initChartsOnce();
+        setTimeout(observeScrollElements, 120);
       } else {
-        dashboardEl.classList.add('hidden');
-        landingEl.classList.remove('hidden');
-
-        tabLanding.classList.add('bg-white', 'text-navy-900', 'shadow-sm');
-        tabLanding.classList.remove('text-slate-600');
-        tabDashboard.classList.remove('bg-navy-900', 'text-white', 'shadow-sm');
-        tabDashboard.classList.add('text-slate-600');
-
-        dashboardLinks.classList.add('hidden');
-        dashboardLinks.classList.remove('lg:flex');
-        landingLinks.classList.remove('hidden');
-        landingLinks.classList.add('lg:flex');
-
+        dashboard.classList.add('hidden');
+        landing.classList.remove('hidden');
+        btnLanding.classList.add('nav-active');
+        btnDashboard.classList.remove('nav-active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(triggerRevealCheck, 120);
+        setTimeout(observeScrollElements, 120);
       }
     }
 
-    // -----------------------------------------------------------------------
-    // 3. PARALLAX SCROLL EFFECT ON HERO & FLOATING ELEMENTS
-    // -----------------------------------------------------------------------
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const bgGrid = document.getElementById('parallax-bg-grid');
-      const orb1 = document.getElementById('parallax-orb-1');
-      const orb2 = document.getElementById('parallax-orb-2');
-      const floatCard = document.getElementById('parallax-float-card');
-
-      if (bgGrid && scrollY < 900) {
-        bgGrid.style.transform = `translate3d(0, ${scrollY * 0.25}px, 0)`;
+    function ensureLandingAndScroll(hashSelector) {
+      const landing = document.getElementById('page-landing');
+      if (landing.classList.contains('hidden')) {
+        switchPage('landing');
+        setTimeout(() => {
+          const el = document.querySelector(hashSelector);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 180);
+      } else {
+        const el = document.querySelector(hashSelector);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
       }
-      if (orb1 && scrollY < 900) {
-        orb1.style.transform = `translate3d(${scrollY * 0.12}px, ${scrollY * 0.35}px, 0)`;
-      }
-      if (orb2 && scrollY < 900) {
-        orb2.style.transform = `translate3d(-${scrollY * 0.15}px, ${scrollY * 0.22}px, 0)`;
-      }
-      if (floatCard && scrollY < 900) {
-        floatCard.style.transform = `translate3d(0, -${scrollY * 0.18}px, 0)`;
-      }
-    }, { passive: true });
-
-    // -----------------------------------------------------------------------
-    // 4. INTERSECTION OBSERVER FOR SCROLL REVEAL ANIMATIONS
-    // -----------------------------------------------------------------------
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-        }
-      });
-    }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -40px 0px'
-    });
-
-    function triggerRevealCheck() {
-      document.querySelectorAll('.reveal').forEach((el) => {
-        revealObserver.observe(el);
-      });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // Ensure initial navbar state
-      document.getElementById('dashboard-quick-links').classList.remove('lg:flex');
-      triggerRevealCheck();
-    });
+    // Mobile Menu
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const iconOpen = document.getElementById('burger-icon-open');
+      const iconClose = document.getElementById('burger-icon-close');
+      const isHidden = menu.classList.contains('hidden');
+      menu.classList.toggle('hidden', !isHidden);
+      iconOpen.classList.toggle('hidden', isHidden);
+      iconClose.classList.toggle('hidden', !isHidden);
+    }
+    function closeMobileMenu() {
+      document.getElementById('mobile-menu').classList.add('hidden');
+      document.getElementById('burger-icon-open').classList.remove('hidden');
+      document.getElementById('burger-icon-close').classList.add('hidden');
+    }
 
-    // -----------------------------------------------------------------------
-    // 5. MODAL FOR FLOATING CHAT BUBBLE DETAILS
-    // -----------------------------------------------------------------------
-    function openInsightModal(index) {
-      const item = insightDetails[index];
+    // Bubble Modal
+    function openBubbleModal(idx) {
+      const item = BUBBLE_INSIGHTS[idx];
       if (!item) return;
-      document.getElementById('modal-badge').textContent = item.badge;
+      document.getElementById('modal-tag').textContent = item.tag;
       document.getElementById('modal-title').textContent = item.title;
-      document.getElementById('modal-stat').textContent = item.stat;
-      document.getElementById('modal-explanation').textContent = item.explanation;
+      document.getElementById('modal-body').textContent = item.body;
       document.getElementById('modal-action').textContent = item.action;
-
-      const modal = document.getElementById('insight-modal');
+      const modal = document.getElementById('bubble-modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-      lucide.createIcons();
     }
-
-    function closeInsightModal() {
-      const modal = document.getElementById('insight-modal');
+    function closeBubbleModal(e) {
+      if (e && e.target !== e.currentTarget) return;
+      const modal = document.getElementById('bubble-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
 
-    // -----------------------------------------------------------------------
-    // 6. CHART.JS VISUALIZATIONS & INTERACTIVE GRADE FILTER
-    // -----------------------------------------------------------------------
-    let chartHabitsInstance, chartSleepInstance, chartGradeTrendInstance, chartObstaclesInstance, chartLearningInstance;
+    // Scroll Reveal Observer & Parallax
+    let observer;
+    function observeScrollElements() {
+      if (!observer) {
+        observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+            }
+          });
+        }, { threshold: 0.12 });
+      }
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach((el) => {
+        observer.observe(el);
+      });
+    }
 
-    function initDashboardCharts() {
-      Chart.defaults.font.family = "'Inter', sans-serif";
-      Chart.defaults.color = '#475569';
+    window.addEventListener('scroll', () => {
+      const heroBg = document.getElementById('hero-parallax-layer');
+      if (heroBg && !document.getElementById('page-landing').classList.contains('hidden')) {
+        const y = window.scrollY;
+        heroBg.style.transform = `translate3d(0, ${Math.min(y * 0.25, 140)}px, 0) scale(1.08)`;
+      }
+    }, { passive: true });
 
-      const initial = surveyDataByGrade.all;
+    // Charts Initialization & Class Filtering
+    let chartsInitialized = false;
+    let chartInstances = {};
+    let currentClassFilter = 'ALL';
 
-      // Chart 1: Horizontal Bar - 7 Kebiasaan
-      const ctx1 = document.getElementById('chartHabits').getContext('2d');
-      chartHabitsInstance = new Chart(ctx1, {
+    function getSeriesForFilter(datasetKey, labelsOrder, filterKey) {
+      if (filterKey === 'ALL') {
+        const src = SURVEY_DATA[datasetKey] || {};
+        return labelsOrder.map((lbl) => src[lbl] || 0);
+      }
+      const mapKey = datasetKey === 'sleep_dur' ? 'sleep_dur_by_class'
+                   : datasetKey === 'breakfast' ? 'breakfast_by_class'
+                   : datasetKey === 'study_freq' ? 'study_by_class'
+                   : null;
+      if (mapKey && SURVEY_DATA[mapKey] && SURVEY_DATA[mapKey][filterKey]) {
+        const src = SURVEY_DATA[mapKey][filterKey];
+        return labelsOrder.map((lbl) => src[lbl] || 0);
+      }
+      const src = SURVEY_DATA[datasetKey] || {};
+      return labelsOrder.map((lbl) => src[lbl] || 0);
+    }
+
+    function initChartsOnce() {
+      if (chartsInitialized) return;
+      chartsInitialized = true;
+
+      const sleepLabels = ['kurang dari 5 Jam', '5 hingga 6 Jam', '7 hingga 8 Jam', 'Lebih dari 8 Jam'];
+      const bfLabels = ['Selalu', 'Sering', 'Kadang-kadang', 'Jarang', 'Tidak Pernah'];
+      const studyLabels = ['Selalu', 'Sering', 'Kadang-kadang', 'Jarang', 'Tidak sama sekali'];
+      const habitLabels = ['Beribadah', 'Bangun pagi', 'Makan sehat dan bergizi', 'Berolahraga', 'Gemar belajar', 'Tidur cepat', 'Bermasyarakat'];
+      const sleepStartLabels = ['Sebelum pukul 21.00', '21.00 - 21.59', '22.00 - 22.59', '23.00 - 23.59', 'Lebih dari jam 00.00'];
+      const exerciseLabels = ['Tidak sama sekali (0 Menit)', 'Ringan (<30 menit / Hari)', 'Sedang (30 - 60 menit / Hari)', 'Aktif (60 - 120 menit / Hari)', 'Sangat Aktif (>120 menit / Hari)'];
+
+      chartInstances.sleep = new Chart(document.getElementById('chartSleepDur'), {
         type: 'bar',
         data: {
-          labels: [
-            'Beribadah',
-            'Bangun Pagi',
-            'Makan Sehat & Bergizi',
-            'Gemar Belajar',
-            'Berolahraga',
-            'Tidur Cepat',
-            'Bermasyarakat'
-          ],
+          labels: sleepLabels,
           datasets: [{
-            label: 'Kebiasaan Utama Siswa (%)',
-            data: initial.habits,
-            backgroundColor: [
-              '#0D9488',
-              '#2563EB',
-              '#3B82F6',
-              '#6366F1',
-              '#F59E0B',
-              '#F43F5E',
-              '#FB7185'
-            ],
-            borderRadius: 8,
-            barThickness: 22
+            label: 'Jumlah Murid',
+            data: getSeriesForFilter('sleep_dur', sleepLabels, 'ALL'),
+            backgroundColor: ['#0F294A', '#2B7DE9', '#0D9488', '#D99B26'],
+            borderRadius: 10
           }]
         },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => ` ${ctx.parsed.x}% siswa memilih sebagai kebiasaan terkuat`
-              }
-            }
-          },
-          scales: {
-            x: {
-              beginAtZero: true,
-              max: 40,
-              grid: { color: '#F1F5F9' },
-              ticks: { callback: (val) => val + '%' }
-            },
-            y: {
-              grid: { display: false },
-              ticks: { font: { weight: '600', size: 12 } }
-            }
-          }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
       });
 
-      // Chart 2: Doughnut - Durasi Tidur Malam
-      const ctx2 = document.getElementById('chartSleep').getContext('2d');
-      chartSleepInstance = new Chart(ctx2, {
+      chartInstances.breakfast = new Chart(document.getElementById('chartBreakfast'), {
+        type: 'bar',
+        data: {
+          labels: bfLabels,
+          datasets: [{
+            label: 'Jumlah Murid',
+            data: getSeriesForFilter('breakfast', bfLabels, 'ALL'),
+            backgroundColor: ['#0D9488', '#2B7DE9', '#D99B26', '#F59E0B', '#64748B'],
+            borderRadius: 10
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      chartInstances.study = new Chart(document.getElementById('chartStudyFreq'), {
+        type: 'bar',
+        data: {
+          labels: studyLabels,
+          datasets: [{
+            label: 'Jumlah Murid',
+            data: getSeriesForFilter('study_freq', studyLabels, 'ALL'),
+            backgroundColor: ['#0F294A', '#1E4E8C', '#38BDF8', '#D99B26', '#94A3B8'],
+            borderRadius: 10
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      chartInstances.habit = new Chart(document.getElementById('chartTopHabit'), {
         type: 'doughnut',
         data: {
-          labels: ['< 5 Jam (Sangat Kurang)', '5–6 Jam (Kurang Tidur)', '7–8 Jam (Ideal)', '> 8 Jam'],
+          labels: habitLabels,
           datasets: [{
-            data: initial.sleepDist,
-            backgroundColor: ['#E11D48', '#F59E0B', '#0D9488', '#2563EB'],
+            data: getSeriesForFilter('top_habit', habitLabels, 'ALL'),
+            backgroundColor: ['#0F294A', '#2B7DE9', '#0D9488', '#D99B26', '#6366F1', '#F59E0B', '#64748B'],
             borderWidth: 2,
-            borderColor: '#FFFFFF',
-            hoverOffset: 8
+            borderColor: '#FFFFFF'
           }]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '64%',
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { boxWidth: 12, padding: 14, font: { size: 11, weight: '500' } }
-            },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => ` ${ctx.label}: ${ctx.parsed}%`
-              }
-            }
-          }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
       });
 
-      // Chart 3: Grouped Bar - Tren Lintas Kelas 10, 11, 12
-      const ctx3 = document.getElementById('chartGradeTrend').getContext('2d');
-      chartGradeTrendInstance = new Chart(ctx3, {
+      chartInstances.sleepStart = new Chart(document.getElementById('chartSleepStart'), {
         type: 'bar',
         data: {
-          labels: ['Kelas 10 (n=257)', 'Kelas 11 (n=205)', 'Kelas 12 (n=196)'],
-          datasets: [
-            {
-              label: 'Selalu Sarapan Pagi (%)',
-              data: [45.9, 37.1, 28.1],
-              backgroundColor: '#0D9488',
-              borderRadius: 8
-            },
-            {
-              label: 'Tidur ≤ 6 Jam / Kurang Tidur (%)',
-              data: [61.5, 67.8, 71.4],
-              backgroundColor: '#F43F5E',
-              borderRadius: 8
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { boxWidth: 12, padding: 14, font: { size: 11, weight: '600' } }
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 85,
-              grid: { color: '#F1F5F9' },
-              ticks: { callback: (val) => val + '%' }
-            },
-            x: {
-              grid: { display: false },
-              ticks: { font: { weight: '600' } }
-            }
-          }
-        }
-      });
-
-      // Chart 4: Bar - Hambatan Terbesar
-      const ctx4 = document.getElementById('chartObstacles').getContext('2d');
-      chartObstaclesInstance = new Chart(ctx4, {
-        type: 'bar',
-        data: {
-          labels: [
-            'Jadwal & Tugas Padat',
-            'Distraksi Ponsel & Medsos',
-            'Sulit Mengatur Waktu',
-            'Kelelahan Fisik / Kantuk',
-            'Pengaruh Lingkungan'
-          ],
+          labels: sleepStartLabels,
           datasets: [{
-            label: 'Persentase Siswa (%)',
-            data: initial.obstacles,
-            backgroundColor: ['#0F172A', '#2563EB', '#F59E0B', '#0D9488', '#64748B'],
-            borderRadius: 8,
-            barThickness: 28
+            label: 'Jumlah Murid',
+            data: getSeriesForFilter('sleep_start', sleepStartLabels, 'ALL'),
+            backgroundColor: ['#0D9488', '#2B7DE9', '#0F294A', '#D99B26', '#DC2626'],
+            borderRadius: 10
           }]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              grid: { color: '#F1F5F9' },
-              ticks: { callback: (val) => val + '%' }
-            },
-            x: {
-              grid: { display: false },
-              ticks: { font: { size: 11, weight: '600' } }
-            }
-          }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
       });
 
-      // Chart 5: Polar Area / Horizontal Bar - Sumber Belajar Mandiri
-      const ctx5 = document.getElementById('chartLearningSources').getContext('2d');
-      chartLearningInstance = new Chart(ctx5, {
+      chartInstances.exercise = new Chart(document.getElementById('chartExercise'), {
         type: 'bar',
         data: {
-          labels: [
-            'Video Edukasi (YouTube/Platform)',
-            'Artificial Intelligence (ChatGPT/Gemini)',
-            'Buku Paket & Catatan Cetak',
-            'Artikel / Jurnal / Forum Diskusi'
-          ],
+          labels: exerciseLabels,
           datasets: [{
-            label: 'Sumber Belajar Utama (%)',
-            data: initial.learningSources,
-            backgroundColor: ['#2563EB', '#7C3AED', '#0D9488', '#F59E0B'],
-            borderRadius: 10,
-            barThickness: 26
+            label: 'Jumlah Murid',
+            data: getSeriesForFilter('exercise', exerciseLabels, 'ALL'),
+            backgroundColor: ['#94A3B8', '#38BDF8', '#0D9488', '#1E4E8C', '#D99B26'],
+            borderRadius: 10
           }]
         },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            x: {
-              beginAtZero: true,
-              max: 50,
-              grid: { color: '#F1F5F9' },
-              ticks: { callback: (val) => val + '%' }
-            },
-            y: {
-              grid: { display: false },
-              ticks: { font: { size: 12, weight: '600' } }
-            }
-          }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
       });
     }
 
-    function updateDashboardFilter(gradeKey) {
-      const data = surveyDataByGrade[gradeKey];
-      if (!data) return;
-
-      // Update active button styling
-      document.querySelectorAll('.grade-btn').forEach((btn) => {
-        if (btn.dataset.grade === gradeKey) {
-          btn.classList.remove('bg-slate-100', 'text-slate-700', 'hover:bg-slate-200');
-          btn.classList.add('bg-navy-900', 'text-white', 'shadow-md');
-        } else {
-          btn.classList.remove('bg-navy-900', 'text-white', 'shadow-md');
-          btn.classList.add('bg-slate-100', 'text-slate-700', 'hover:bg-slate-200');
-        }
+    function setClassFilter(filterKey) {
+      currentClassFilter = filterKey;
+      document.querySelectorAll('.filter-btn').forEach((btn) => {
+        const active = btn.getAttribute('data-filter') === filterKey;
+        btn.className = active
+          ? 'filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-sman-navy text-white cursor-pointer'
+          : 'filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-sman-navy hover:bg-slate-200 cursor-pointer';
       });
+      if (!chartsInitialized) return;
 
-      // Update KPI Cards
-      document.getElementById('kpi-respondents').textContent = data.respondents;
-      document.getElementById('kpi-respondents-sub').textContent = data.respondentsSub;
-      document.getElementById('kpi-sleep').textContent = data.sleepShort;
-      document.getElementById('kpi-sleep-sub').textContent = data.sleepSub;
-      document.getElementById('kpi-breakfast').textContent = data.breakfastAlways;
-      document.getElementById('kpi-breakfast-sub').textContent = data.breakfastSub;
-      document.getElementById('kpi-digital-learn').textContent = data.digitalLearn;
-      document.getElementById('kpi-digital-learn-sub').textContent = data.digitalSub;
+      const sleepLabels = ['kurang dari 5 Jam', '5 hingga 6 Jam', '7 hingga 8 Jam', 'Lebih dari 8 Jam'];
+      const bfLabels = ['Selalu', 'Sering', 'Kadang-kadang', 'Jarang', 'Tidak Pernah'];
+      const studyLabels = ['Selalu', 'Sering', 'Kadang-kadang', 'Jarang', 'Tidak sama sekali'];
 
-      // Update Charts Dynamically
-      if (chartHabitsInstance) {
-        chartHabitsInstance.data.datasets[0].data = data.habits;
-        chartHabitsInstance.update();
-      }
-      if (chartSleepInstance) {
-        chartSleepInstance.data.datasets[0].data = data.sleepDist;
-        chartSleepInstance.update();
-      }
-      if (chartObstaclesInstance) {
-        chartObstaclesInstance.data.datasets[0].data = data.obstacles;
-        chartObstaclesInstance.update();
-      }
-      if (chartLearningInstance) {
-        chartLearningInstance.data.datasets[0].data = data.learningSources;
-        chartLearningInstance.update();
-      }
+      chartInstances.sleep.data.datasets[0].data = getSeriesForFilter('sleep_dur', sleepLabels, filterKey);
+      chartInstances.breakfast.data.datasets[0].data = getSeriesForFilter('breakfast', bfLabels, filterKey);
+      chartInstances.study.data.datasets[0].data = getSeriesForFilter('study_freq', studyLabels, filterKey);
+
+      chartInstances.sleep.update();
+      chartInstances.breakfast.update();
+      chartInstances.study.update();
     }
 
-    // -----------------------------------------------------------------------
-    // 7. COPY PYTHON CODE USING DOCUMENT.EXECCOMMAND('COPY')
-    // -----------------------------------------------------------------------
-    function copyPythonCode() {
-      const codeText = document.getElementById('python-code-snippet').innerText;
-      const tempTextArea = document.createElement('textarea');
-      tempTextArea.value = codeText;
-      tempTextArea.style.position = 'fixed';
-      tempTextArea.style.opacity = '0';
-      document.body.appendChild(tempTextArea);
-      tempTextArea.select();
-
-      try {
-        document.execCommand('copy');
-        const btnText = document.getElementById('copy-code-text');
-        btnText.textContent = 'Tersalin!';
-        showToast('Kode Python Google Colab berhasil disalin ke clipboard!');
-        setTimeout(() => {
-          btnText.textContent = 'Salin Kode Python';
-        }, 2500);
-      } catch (err) {
-        showToast('Gagal menyalin kode secara otomatis.');
-      } finally {
-        document.body.removeChild(tempTextArea);
-      }
+    function copyColabCode() {
+      const codeEl = document.getElementById('colab-code-block');
+      navigator.clipboard.writeText(codeEl.innerText).then(() => {
+        const btn = document.getElementById('btn-copy-code');
+        const old = btn.textContent;
+        btn.textContent = 'Tersalin!';
+        setTimeout(() => { btn.textContent = old; }, 1600);
+      });
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast-notification');
-      document.getElementById('toast-message').textContent = msg;
-      toast.classList.remove('hidden');
-      toast.classList.add('flex');
-      setTimeout(() => {
-        toast.classList.add('hidden');
-        toast.classList.remove('flex');
-      }, 3200);
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      observeScrollElements();
+    });
   </script>
 </body>
 </html>
