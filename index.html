@@ -3,9 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>G7KAIH Analytics — SMAN 1 Kota Depok</title>
+  <title>G7KAIH Horizontal Analytics — SMAN 1 Kota Depok</title>
+  <link rel="icon" type="image/x-icon" href="https://ridergalau.id/wp-content/uploads/2026/04/Logo-SMAN-1-Depok.png">
+
+  <!-- Libraries-->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -151,12 +156,12 @@
       <div class="flex items-center justify-between h-16 md:h-20">
         <!-- Brand Logo -->
         <button onclick="switchPage('landing')" class="flex items-center gap-3 text-left group focus:outline-none">
-          <div class="w-11 h-11 rounded-xl bg-sman-navy/5 border border-sman-gold/50 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-105 transition">
+          <div class="w-14 h-14 flex items-center justify-center overflow-hidden group-hover:scale-105 transition">
             <img
-              id="school-logo-img"
-              src="https://drive.google.com/thumbnail?id=1pSemN-px2nRwSxuAa7LRH6oEZD4TFipG&sz=w200"
+              id="school-logo-img" 
+              src="https://ridergalau.id/wp-content/uploads/2026/04/Logo-SMAN-1-Depok.png"
               alt="Logo SMAN 1 Kota Depok"
-              class="w-9 h-9 object-contain"
+              class="object-contain"
               onerror="this.style.display='none'; document.getElementById('logo-fallback').classList.remove('hidden');"
             />
             <span id="logo-fallback" class="hidden font-extrabold text-sman-navy text-sm tracking-tight">S1D</span>
@@ -465,8 +470,7 @@
                 <img
                   src="https://drive.google.com/thumbnail?id=1qZ_eD_3wHVCGltxiX_jPHW3UL9H1Eq2g&sz=w400"
                   alt="Achmad Azzam Sofyan Putra"
-                  class="w-full h-full object-cover"
-                  onerror="this.replaceWith(createAvatarFallback('AA', 'Achmad Azzam Sofyan Putra'))"
+                  class="w-full h-full object-cover object-top                  onerror="this.replaceWith(createAvatarFallback('AA', 'Achmad Azzam Sofyan Putra'))"
                 />
               </div>
               <h4 class="font-bold text-sman-navy text-sm leading-snug">Achmad Azzam Sofyan Putra</h4>
@@ -511,7 +515,7 @@
             <div class="bg-sman-surface rounded-2xl p-4 border border-slate-200/80 hover:shadow-md transition flex flex-col items-center text-center reveal-scale">
               <div class="w-24 h-24 rounded-2xl overflow-hidden bg-sman-navy/10 border-2 border-sman-gold/50 mb-3">
                 <img
-                  src="https://drive.google.com/thumbnail?id=1pXO4_wsL5m51xLCJWxuM980GhBt1_MnQ&sz=w400"
+                  src="https://drive.google.com/thumbnail?id=12VY8FCCmXHnizz_f9pxJhypRF3YrzsAX&sz=w400"
                   alt="Stanislaus Marvel Londar"
                   class="w-full h-full object-cover"
                   onerror="this.replaceWith(createAvatarFallback('SM', 'Stanislaus Marvel Londar'))"
@@ -529,7 +533,7 @@
                 <img
                   src="https://drive.google.com/thumbnail?id=1QcNIuRMDzsd_Pla36lyQdBkOSD55qtxZ&sz=w400"
                   alt="Muhammad Alfarrell Raziq"
-                  class="w-full h-full object-cover"
+                  class="w-full h-full object-cover scale-"
                   onerror="this.replaceWith(createAvatarFallback('MA', 'Muhammad Alfarrell Raziq'))"
                 />
               </div>
@@ -574,7 +578,7 @@
                 />
               </div>
               <div>
-                <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-sman-blue">Guru Pembimbing</span>
+                <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-sman-blue">Pembina 2</span>
                 <h4 class="text-lg font-extrabold text-sman-navy">Ibu Mersi Selano</h4>
                 <p class="text-xs sm:text-sm text-sman-muted mt-0.5">Pembimbing metodologi riset, koordinasi pelaksanaan survei, dan penguatan implementasi G7KAIH di sekolah.</p>
               </div>
